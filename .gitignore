@@ -1,6 +1,6 @@
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment Variables ###
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+### Logs ###
+*.log
+logs/
+log/
+
+### Docker ###
+docker-compose.override.yml
+
+### System Files ###
+.DS_Store
+Thumbs.db
