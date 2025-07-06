@@ -1,0 +1,73 @@
+package com.zettamercado.controller;
+
+import com.zettamercado.dto.CarrinhoDTO;
+import com.zettamercado.dto.ItemCarrinhoDTO;
+import com.zettamercado.service.CarrinhoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/carrinhos")
+@RequiredArgsConstructor
+@Tag(name = "Carrinho", description = "Endpoints para gerenciamento do carrinho de compras")
+@SecurityRequirement(name = "bearerAuth")
+public class CarrinhoController {
+
+    private final CarrinhoService carrinhoService;
+
+    @GetMapping("/atual")
+    @Operation(summary = "Buscar carrinho atual do usuário")
+    public ResponseEntity<CarrinhoDTO> buscarCarrinhoAtual(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(carrinhoService.buscarCarrinhoAtual(userDetails.getUsername()));
+    }
+
+    @PostMapping("/atual/items")
+    @Operation(summary = "Adicionar item ao carrinho")
+    public ResponseEntity<CarrinhoDTO> adicionarItem(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody ItemCarrinhoDTO item) {
+        return ResponseEntity.ok(carrinhoService.adicionarItem(userDetails.getUsername(), item));
+    }
+
+    @PutMapping("/atual/items/{itemId}")
+    @Operation(summary = "Atualizar quantidade de um item")
+    public ResponseEntity<CarrinhoDTO> atualizarQuantidade(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable UUID itemId,
+            @RequestParam Integer quantidade) {
+        return ResponseEntity.ok(carrinhoService.atualizarQuantidade(userDetails.getUsername(), itemId, quantidade));
+    }
+
+    @DeleteMapping("/atual/items/{itemId}")
+    @Operation(summary = "Remover item do carrinho")
+    public ResponseEntity<CarrinhoDTO> removerItem(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable UUID itemId) {
+        return ResponseEntity.ok(carrinhoService.removerItem(userDetails.getUsername(), itemId));
+    }
+
+    @PostMapping("/atual/finalizar")
+    @Operation(summary = "Finalizar compra")
+    public ResponseEntity<CarrinhoDTO> finalizarCompra(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(carrinhoService.finalizarCompra(userDetails.getUsername()));
+    }
+
+    @DeleteMapping("/atual")
+    @Operation(summary = "Limpar carrinho")
+    public ResponseEntity<Void> limparCarrinho(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        carrinhoService.limparCarrinho(userDetails.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+} 
