@@ -1,0 +1,421 @@
+-- Inserir 100 produtos famosos de e-commerce
+-- Distribuídos entre as categorias: Mercearia, Hortifruti, Bebidas, Carnes, Laticínios
+
+-- PRODUTOS DE MERCEARIA (30 produtos)
+INSERT INTO produtos (nome, descricao, preco, quantidade_estoque, categoria_id, codigo_barras, status)
+SELECT 
+    'Arroz Branco Uncle Ben''s', 'Arroz branco parboilizado, pacote 1kg', 8.99, 150, id, '7891000001001', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Feijão Preto Camil', 'Feijão preto tipo 1, pacote 1kg', 7.49, 120, id, '7891000001002', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Açúcar Cristal União', 'Açúcar cristal especial, pacote 1kg', 4.99, 200, id, '7891000001003', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Óleo de Soja Liza', 'Óleo de soja refinado, garrafa 900ml', 6.99, 180, id, '7891000001004', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Sal Refinado Cisne', 'Sal refinado iodado, pacote 1kg', 2.99, 300, id, '7891000001005', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Macarrão Espaguete Barilla', 'Macarrão espaguete nº 8, pacote 500g', 5.99, 250, id, '7891000001006', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Farinha de Trigo Dona Benta', 'Farinha de trigo especial, pacote 1kg', 4.49, 160, id, '7891000001007', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Café Pilão', 'Café torrado e moído tradicional, pacote 500g', 12.99, 100, id, '7891000001008', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Molho de Tomate Quero', 'Molho de tomate tradicional, lata 340g', 3.49, 220, id, '7891000001009', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Biscoito Cream Cracker Adria', 'Biscoito cream cracker, pacote 400g', 4.99, 180, id, '7891000001010', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Sardinha Gomes da Costa', 'Sardinha em óleo comestível, lata 125g', 4.99, 150, id, '7891000001011', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Atum Gomes da Costa', 'Atum sólido em óleo, lata 170g', 7.99, 120, id, '7891000001012', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Vinagre Castelo', 'Vinagre de álcool, garrafa 750ml', 2.99, 200, id, '7891000001013', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Azeite Andorinha', 'Azeite de oliva extra virgem, garrafa 500ml', 19.99, 80, id, '7891000001014', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Ervilha Quero', 'Ervilha em conserva, lata 200g', 3.99, 160, id, '7891000001015', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Milho Verde Quero', 'Milho verde em conserva, lata 200g', 3.99, 160, id, '7891000001016', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Extrato de Tomate Quero', 'Extrato de tomate concentrado, lata 130g', 2.99, 180, id, '7891000001017', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Tempero Completo Knorr', 'Tempero completo para carnes, frasco 60g', 4.99, 140, id, '7891000001018', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Caldo de Galinha Knorr', 'Caldo de galinha em tabletes, caixa 57g', 3.99, 200, id, '7891000001019', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Maionese Hellmann''s', 'Maionese tradicional, pote 500g', 8.99, 100, id, '7891000001020', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Ketchup Heinz', 'Ketchup tradicional, frasco 397g', 6.99, 120, id, '7891000001021', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Mostarda Heinz', 'Mostarda amarela, frasco 255g', 4.99, 100, id, '7891000001022', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Pimenta do Reino Kitano', 'Pimenta do reino moída, frasco 30g', 5.99, 80, id, '7891000001023', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Orégano Kitano', 'Orégano desidratado, frasco 10g', 3.99, 100, id, '7891000001024', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Aveia Quaker', 'Aveia em flocos finos, pacote 500g', 7.99, 120, id, '7891000001025', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Granola Kobber', 'Granola tradicional, pacote 800g', 12.99, 80, id, '7891000001026', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Mel Baldoni', 'Mel de abelha puro, pote 500g', 15.99, 60, id, '7891000001027', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Achocolatado Nescau', 'Achocolatado em pó, lata 400g', 8.99, 150, id, '7891000001028', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Leite Condensado Moça', 'Leite condensado, lata 395g', 5.99, 180, id, '7891000001029', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia'
+UNION ALL
+SELECT 
+    'Creme de Leite Nestlé', 'Creme de leite fresco, caixa 200g', 3.99, 200, id, '7891000001030', 'ATIVO'
+FROM categorias WHERE nome = 'Mercearia';
+
+-- PRODUTOS DE HORTIFRUTI (25 produtos)
+INSERT INTO produtos (nome, descricao, preco, quantidade_estoque, categoria_id, codigo_barras, status)
+SELECT 
+    'Banana Nanica', 'Banana nanica madura, kg', 4.99, 100, id, '7892000002001', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Maçã Gala', 'Maçã gala nacional, kg', 7.99, 80, id, '7892000002002', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Laranja Pera', 'Laranja pera para suco, kg', 3.99, 120, id, '7892000002003', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Limão Tahiti', 'Limão tahiti, kg', 5.99, 90, id, '7892000002004', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Mamão Papaya', 'Mamão papaya maduro, kg', 6.99, 70, id, '7892000002005', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Abacaxi Pérola', 'Abacaxi pérola doce, unidade', 8.99, 50, id, '7892000002006', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Manga Tommy', 'Manga tommy madura, kg', 9.99, 60, id, '7892000002007', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Uva Itália', 'Uva itália sem semente, kg', 12.99, 40, id, '7892000002008', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Morango', 'Morango fresco, bandeja 250g', 8.99, 30, id, '7892000002009', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Tomate Salada', 'Tomate salada, kg', 6.99, 100, id, '7892000002010', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Cebola Branca', 'Cebola branca, kg', 4.99, 150, id, '7892000002011', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Batata Inglesa', 'Batata inglesa, kg', 5.99, 120, id, '7892000002012', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Cenoura', 'Cenoura fresca, kg', 4.99, 100, id, '7892000002013', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Alface Americana', 'Alface americana, unidade', 3.99, 80, id, '7892000002014', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Brócolis', 'Brócolis fresco, kg', 8.99, 60, id, '7892000002015', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Couve-flor', 'Couve-flor fresca, kg', 7.99, 50, id, '7892000002016', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Abobrinha', 'Abobrinha italiana, kg', 5.99, 70, id, '7892000002017', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Berinjela', 'Berinjela roxa, kg', 6.99, 60, id, '7892000002018', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Pimentão Verde', 'Pimentão verde, kg', 7.99, 80, id, '7892000002019', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Pepino', 'Pepino japonês, kg', 4.99, 90, id, '7892000002020', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Alho', 'Alho roxo, kg', 24.99, 30, id, '7892000002021', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Gengibre', 'Gengibre fresco, kg', 18.99, 25, id, '7892000002022', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Batata Doce', 'Batata doce roxa, kg', 6.99, 80, id, '7892000002023', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Mandioca', 'Mandioca descascada, kg', 4.99, 100, id, '7892000002024', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti'
+UNION ALL
+SELECT 
+    'Abóbora Cabotiá', 'Abóbora cabotiá, kg', 3.99, 120, id, '7892000002025', 'ATIVO'
+FROM categorias WHERE nome = 'Hortifruti';
+
+-- PRODUTOS DE BEBIDAS (20 produtos)
+INSERT INTO produtos (nome, descricao, preco, quantidade_estoque, categoria_id, codigo_barras, status)
+SELECT 
+    'Coca-Cola', 'Refrigerante Coca-Cola, garrafa 2L', 7.99, 200, id, '7893000003001', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Pepsi', 'Refrigerante Pepsi, garrafa 2L', 6.99, 150, id, '7893000003002', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Guaraná Antarctica', 'Refrigerante Guaraná Antarctica, garrafa 2L', 6.99, 180, id, '7893000003003', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Fanta Laranja', 'Refrigerante Fanta Laranja, garrafa 2L', 6.99, 160, id, '7893000003004', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Sprite', 'Refrigerante Sprite, garrafa 2L', 6.99, 140, id, '7893000003005', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Água Crystal', 'Água mineral Crystal, garrafa 1.5L', 2.99, 300, id, '7893000003006', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Água com Gás Perrier', 'Água mineral com gás Perrier, garrafa 330ml', 4.99, 100, id, '7893000003007', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Suco Del Valle Laranja', 'Suco Del Valle sabor laranja, caixa 1L', 5.99, 120, id, '7893000003008', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Suco Tang Laranja', 'Suco em pó Tang sabor laranja, envelope 25g', 1.99, 200, id, '7893000003009', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Cerveja Skol', 'Cerveja Skol lata, 350ml', 3.99, 250, id, '7893000003010', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Cerveja Brahma', 'Cerveja Brahma lata, 350ml', 3.99, 230, id, '7893000003011', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Cerveja Heineken', 'Cerveja Heineken long neck, 330ml', 6.99, 150, id, '7893000003012', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Vinho Tinto Miolo', 'Vinho tinto seco Miolo, garrafa 750ml', 29.99, 50, id, '7893000003013', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Energético Red Bull', 'Energético Red Bull, lata 250ml', 8.99, 100, id, '7893000003014', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Chá Mate Leão', 'Chá mate natural Leão, caixa 20 sachês', 4.99, 80, id, '7893000003015', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Isotônico Gatorade', 'Isotônico Gatorade sabor limão, garrafa 500ml', 4.99, 120, id, '7893000003016', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Água de Coco Kero Coco', 'Água de coco natural Kero Coco, caixa 1L', 6.99, 90, id, '7893000003017', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Refrigerante Zero Coca-Cola', 'Coca-Cola Zero açúcar, garrafa 2L', 7.99, 180, id, '7893000003018', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Suco Natural One Laranja', 'Suco natural One sabor laranja, garrafa 900ml', 8.99, 70, id, '7893000003019', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas'
+UNION ALL
+SELECT 
+    'Kombucha GT''s', 'Kombucha GT''s sabor gengibre, garrafa 480ml', 12.99, 40, id, '7893000003020', 'ATIVO'
+FROM categorias WHERE nome = 'Bebidas';
+
+-- PRODUTOS DE CARNES (15 produtos)
+INSERT INTO produtos (nome, descricao, preco, quantidade_estoque, categoria_id, codigo_barras, status)
+SELECT 
+    'Picanha Bovina', 'Picanha bovina premium, kg', 79.99, 30, id, '7894000004001', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Alcatra Bovina', 'Alcatra bovina sem osso, kg', 49.99, 40, id, '7894000004002', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Contrafilé Bovino', 'Contrafilé bovino, kg', 59.99, 35, id, '7894000004003', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Coxão Mole', 'Coxão mole bovino, kg', 39.99, 50, id, '7894000004004', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Frango Inteiro', 'Frango inteiro congelado, kg', 12.99, 80, id, '7894000004005', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Peito de Frango', 'Peito de frango sem osso, kg', 18.99, 60, id, '7894000004006', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Coxa e Sobrecoxa', 'Coxa e sobrecoxa de frango, kg', 9.99, 70, id, '7894000004007', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Linguiça Toscana', 'Linguiça toscana suína, kg', 24.99, 40, id, '7894000004008', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Bacon Fatiado', 'Bacon suíno fatiado, pacote 250g', 12.99, 50, id, '7894000004009', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Salsicha Perdigão', 'Salsicha de frango Perdigão, pacote 500g', 8.99, 60, id, '7894000004010', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Hambúrguer Sadia', 'Hambúrguer bovino Sadia, caixa 672g', 15.99, 45, id, '7894000004011', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Salmão Fresco', 'Salmão fresco sem espinha, kg', 89.99, 20, id, '7894000004012', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Tilápia', 'Filé de tilápia congelado, kg', 29.99, 35, id, '7894000004013', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Camarão Médio', 'Camarão médio descascado, kg', 69.99, 25, id, '7894000004014', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes'
+UNION ALL
+SELECT 
+    'Carne Seca', 'Carne seca de primeira, kg', 79.99, 20, id, '7894000004015', 'ATIVO'
+FROM categorias WHERE nome = 'Carnes';
+
+-- PRODUTOS DE LATICÍNIOS (10 produtos)
+INSERT INTO produtos (nome, descricao, preco, quantidade_estoque, categoria_id, codigo_barras, status)
+SELECT 
+    'Leite Longa Vida Parmalat', 'Leite UHT integral Parmalat, caixa 1L', 4.99, 200, id, '7895000005001', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Iogurte Natural Danone', 'Iogurte natural Danone, pote 170g', 3.99, 150, id, '7895000005002', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Queijo Mussarela Tirolez', 'Queijo mussarela fatiado Tirolez, pacote 150g', 8.99, 100, id, '7895000005003', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Queijo Prato Polenghi', 'Queijo prato fatiado Polenghi, pacote 150g', 9.99, 80, id, '7895000005004', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Requeijão Catupiry', 'Requeijão cremoso Catupiry, pote 200g', 7.99, 120, id, '7895000005005', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Manteiga Aviação', 'Manteiga com sal Aviação, pote 200g', 12.99, 90, id, '7895000005006', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Margarina Qualy', 'Margarina cremosa Qualy, pote 500g', 6.99, 110, id, '7895000005007', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Cream Cheese Philadelphia', 'Cream cheese Philadelphia, pote 150g', 11.99, 70, id, '7895000005008', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Leite Condensado Nestlé', 'Leite condensado Nestlé, lata 395g', 5.99, 160, id, '7895000005009', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios'
+UNION ALL
+SELECT 
+    'Nata Nestlé', 'Nata para culinária Nestlé, caixa 200ml', 4.99, 140, id, '7895000005010', 'ATIVO'
+FROM categorias WHERE nome = 'Laticínios';
+
+-- Criar índices adicionais para melhor performance
+CREATE INDEX idx_produtos_nome ON produtos(nome);
+CREATE INDEX idx_produtos_preco ON produtos(preco);
+CREATE INDEX idx_produtos_estoque ON produtos(quantidade_estoque);
+CREATE INDEX idx_produtos_codigo_barras ON produtos(codigo_barras);
+
+-- Atualizar estatísticas da tabela
+ANALYZE produtos;

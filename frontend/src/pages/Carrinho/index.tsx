@@ -1,240 +1,309 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Button,
   Box,
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  IconButton,
+  Divider,
   CircularProgress,
-  Chip,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Remove as RemoveIcon,
   Delete as DeleteIcon,
-  Refresh as RefreshIcon,
+  ShoppingCart as ShoppingCartIcon,
+  ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
-import api from '../../services/api';
-import { useAutoRefresh } from '../../hooks/useAutoRefresh';
-
-interface ItemCarrinho {
-  id: number;
-  produtoId: number;
-  quantidade: number;
-  produto: {
-    id: number;
-    nome: string;
-    preco: number;
-    imagemUrl: string;
-  };
-}
+import { useNavigate } from 'react-router-dom';
+import { useCarrinho } from '../../contexts/CarrinhoContext';
 
 const Carrinho: React.FC = () => {
-  const [itens, setItens] = useState<ItemCarrinho[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const navigate = useNavigate();
+  const { 
+    carrinho, 
+    loading, 
+    atualizarQuantidade, 
+    removerItem, 
+    limparCarrinho, 
+    finalizarCompra 
+  } = useCarrinho();
+  
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
-  const fetchCarrinho = async () => {
+  const handleQuantidadeChange = async (itemId: string, novaQuantidade: number) => {
+    if (novaQuantidade < 1) return;
+    
     try {
-      setError('');
-      const response = await api.get('/carrinho');
-      setItens(response.data.itens || []);
-      setLastUpdate(new Date());
-    } catch (err) {
-      setError('Erro ao carregar carrinho');
-    } finally {
-      setLoading(false);
+      await atualizarQuantidade(itemId, novaQuantidade);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Erro ao atualizar quantidade',
+        severity: 'error'
+      });
     }
   };
 
-  useEffect(() => {
-    fetchCarrinho();
-  }, []);
-
-  // Auto-refresh a cada 30 segundos
-  const { forceRefresh } = useAutoRefresh(fetchCarrinho, {
-    interval: 30000,
-    enabled: !loading && !error
-  });
-
-  const handleUpdateQuantidade = async (itemId: number, quantidade: number) => {
+  const handleRemoverItem = async (itemId: string) => {
     try {
-      await api.put(`/carrinho/itens/${itemId}`, { quantidade });
-      fetchCarrinho();
-    } catch (err) {
-      setError('Erro ao atualizar quantidade');
+      await removerItem(itemId);
+      setSnackbar({
+        open: true,
+        message: 'Item removido do carrinho',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Erro ao remover item',
+        severity: 'error'
+      });
     }
   };
 
-  const handleRemoverItem = async (itemId: number) => {
+  const handleLimparCarrinho = async () => {
     try {
-      await api.delete(`/carrinho/itens/${itemId}`);
-      fetchCarrinho();
-    } catch (err) {
-      setError('Erro ao remover item');
+      await limparCarrinho();
+      setDialogOpen(false);
+      setSnackbar({
+        open: true,
+        message: 'Carrinho limpo com sucesso',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Erro ao limpar carrinho',
+        severity: 'error'
+      });
     }
   };
 
   const handleFinalizarCompra = async () => {
     try {
-      await api.post('/carrinho/finalizar');
-      setItens([]);
-    } catch (err) {
-      setError('Erro ao finalizar compra');
+      await finalizarCompra();
+      setSnackbar({
+        open: true,
+        message: 'Compra finalizada com sucesso!',
+        severity: 'success'
+      });
+      navigate('/produtos');
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Erro ao finalizar compra',
+        severity: 'error'
+      });
     }
   };
 
-  const total = itens.reduce(
-    (acc, item) => acc + item.produto.preco * item.quantidade,
-    0
-  );
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
+      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
         <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Typography color="error" align="center" variant="h6" sx={{ mt: 4 }}>
-          {error}
-        </Typography>
       </Container>
     );
   }
 
-  if (itens.length === 0) {
+  if (!carrinho || carrinho.itens.length === 0) {
     return (
-      <Container>
-        <Typography variant="h5" align="center" sx={{ mt: 4 }}>
-          Seu carrinho está vazio
-        </Typography>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+          <IconButton onClick={() => navigate('/produtos')} sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h4" component="h1">
+            Carrinho de Compras
+          </Typography>
+        </Box>
+        
+        <Box sx={{ textAlign: 'center', py: 8 }}>
+          <ShoppingCartIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            Seu carrinho está vazio
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Adicione alguns produtos para começar suas compras
+          </Typography>
+          <Button 
+            variant="contained" 
+            size="large"
+            onClick={() => navigate('/produtos')}
+          >
+            Continuar Comprando
+          </Button>
+        </Box>
       </Container>
     );
   }
 
   return (
-    <Container>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <IconButton onClick={() => navigate('/produtos')} sx={{ mr: 2 }}>
+          <ArrowBackIcon />
+        </IconButton>
         <Typography variant="h4" component="h1">
-          Meu Carrinho
+          Carrinho de Compras
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Chip 
-            label={`Última atualização: ${lastUpdate.toLocaleTimeString()}`}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<RefreshIcon />}
-            onClick={forceRefresh}
-            disabled={loading}
-          >
-            Atualizar
-          </Button>
-        </Box>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Produto</TableCell>
-              <TableCell align="right">Preço Unit.</TableCell>
-              <TableCell align="center">Quantidade</TableCell>
-              <TableCell align="right">Subtotal</TableCell>
-              <TableCell align="center">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {itens.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell component="th" scope="row">
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src={item.produto.imagemUrl || 'https://via.placeholder.com/50'}
-                      alt={item.produto.nome}
-                      style={{ width: 50, height: 50, marginRight: 10 }}
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8}>
+          {carrinho.itens.map((item) => (
+            <Card key={item.id} sx={{ mb: 2 }}>
+              <CardContent>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={3}>
+                    <Box
+                      component="img"
+                      src={item.produtoImagem || '/placeholder-image.jpg'}
+                      alt={item.produtoNome}
+                      sx={{
+                        width: '100%',
+                        height: 100,
+                        objectFit: 'cover',
+                        borderRadius: 1,
+                      }}
                     />
-                    {item.produto.nome}
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  R$ {item.produto.preco.toFixed(2)}
-                </TableCell>
-                <TableCell align="center">
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleUpdateQuantidade(item.id, item.quantidade - 1)}
-                      disabled={item.quantidade <= 1}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography sx={{ mx: 2 }}>{item.quantidade}</Typography>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleUpdateQuantidade(item.id, item.quantidade + 1)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  R$ {(item.produto.preco * item.quantidade).toFixed(2)}
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleRemoverItem(item.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell colSpan={3} align="right">
-                <Typography variant="h6">Total:</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="h6">R$ {total.toFixed(2)}</Typography>
-              </TableCell>
-              <TableCell />
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Typography variant="h6" gutterBottom>
+                      {item.produtoNome}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      R$ {item.precoUnitario.toFixed(2)} cada
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleQuantidadeChange(item.id, item.quantidade - 1)}
+                        disabled={loading}
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography sx={{ mx: 2, minWidth: '20px', textAlign: 'center' }}>
+                        {item.quantidade}
+                      </Typography>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleQuantidadeChange(item.id, item.quantidade + 1)}
+                        disabled={loading}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={2}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h6" color="primary" gutterBottom>
+                        R$ {item.subtotal.toFixed(2)}
+                      </Typography>
+                      <IconButton 
+                        color="error" 
+                        onClick={() => handleRemoverItem(item.id)}
+                        disabled={loading}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
 
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          variant="contained"
-          size="large"
-          onClick={handleFinalizarCompra}
-        >
-          Finalizar Compra
-        </Button>
-      </Box>
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Resumo do Pedido
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Typography>Itens ({carrinho.quantidadeItens}):</Typography>
+                <Typography>R$ {carrinho.valorTotal.toFixed(2)}</Typography>
+              </Box>
+              
+              <Divider sx={{ my: 2 }} />
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                <Typography variant="h6">Total:</Typography>
+                <Typography variant="h6" color="primary">
+                  R$ {carrinho.valorTotal.toFixed(2)}
+                </Typography>
+              </Box>
+              
+              <Button 
+                variant="contained" 
+                fullWidth 
+                size="large"
+                onClick={handleFinalizarCompra}
+                disabled={loading}
+                sx={{ mb: 2 }}
+              >
+                Finalizar Compra
+              </Button>
+              
+              <Button 
+                variant="outlined" 
+                fullWidth
+                onClick={() => setDialogOpen(true)}
+                disabled={loading}
+              >
+                Limpar Carrinho
+              </Button>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Dialog de confirmação */}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>Confirmar Limpeza</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Tem certeza que deseja remover todos os itens do carrinho?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancelar</Button>
+          <Button onClick={handleLimparCarrinho} color="error" autoFocus>
+            Limpar Carrinho
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar para notificações */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

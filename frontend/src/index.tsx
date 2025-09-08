@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
 import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';
+import { CarrinhoProvider } from './contexts/CarrinhoContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,8 +16,10 @@ root.render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <App />
+        <CarrinhoProvider>
+          <App />
+        </CarrinhoProvider>
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>
-); 
+);

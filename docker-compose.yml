@@ -1,21 +1,22 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: zettamercado-postgres
+  mysql:
+    image: mysql:8.0
+    container_name: zettamercado-mysql
     environment:
-      POSTGRES_DB: zettamercado
-      POSTGRES_USER: zettamercado
-      POSTGRES_PASSWORD: zettamercado
+      MYSQL_DATABASE: zettamercado
+      MYSQL_USER: zettamercado
+      MYSQL_PASSWORD: zettamercado
+      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     networks:
       - zettamercado-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U zettamercado"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -42,7 +43,7 @@ services:
     container_name: zettamercado-backend
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/zettamercado
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/zettamercado
       SPRING_DATASOURCE_USERNAME: zettamercado
       SPRING_DATASOURCE_PASSWORD: zettamercado
       SPRING_REDIS_HOST: redis
@@ -50,7 +51,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      - mysql
       - redis
     networks:
       - zettamercado-network
@@ -68,7 +69,7 @@ services:
       - zettamercado-network
 
 volumes:
-  postgres_data:
+  mysql_data:
   redis_data:
 
 networks:

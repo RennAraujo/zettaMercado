@@ -27,12 +27,23 @@ public class Categoria {
     private StatusCategoria status = StatusCategoria.ATIVA;
     
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao = LocalDateTime.now();
+    private LocalDateTime dataCriacao;
     
     @Column(name = "data_atualizacao", nullable = false)
-    private LocalDateTime dataAtualizacao = LocalDateTime.now();
+    private LocalDateTime dataAtualizacao;
+    
+    @PrePersist
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
     
     public enum StatusCategoria {
         ATIVA, INATIVA
     }
-} 
+}

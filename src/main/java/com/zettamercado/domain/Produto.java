@@ -48,10 +48,21 @@ public class Produto {
     private StatusProduto status = StatusProduto.ATIVO;
     
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao = LocalDateTime.now();
+    private LocalDateTime dataCriacao;
     
     @Column(name = "data_atualizacao", nullable = false)
-    private LocalDateTime dataAtualizacao = LocalDateTime.now();
+    private LocalDateTime dataAtualizacao;
+    
+    @PrePersist
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
     
     @Version
     private Long version;
@@ -59,4 +70,4 @@ public class Produto {
     public enum StatusProduto {
         ATIVO, INATIVO, ESGOTADO
     }
-} 
+}
