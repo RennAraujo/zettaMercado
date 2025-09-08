@@ -1,5 +1,6 @@
 package com.zettamercado.exception;
 
+import com.zettamercado.service.AuditoriaService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

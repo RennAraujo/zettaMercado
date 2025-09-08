@@ -35,10 +35,42 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zettamercado-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/zettamercado
+      SPRING_DATASOURCE_USERNAME: zettamercado
+      SPRING_DATASOURCE_PASSWORD: zettamercado
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - zettamercado-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: zettamercado-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - zettamercado-network
+
 volumes:
   postgres_data:
   redis_data:
 
 networks:
   zettamercado-network:
-    driver: bridge 
+    driver: bridge

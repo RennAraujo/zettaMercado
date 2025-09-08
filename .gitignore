@@ -50,3 +50,61 @@ docker-compose.override.yml
 ### System Files ###
 .DS_Store
 Thumbs.db
+
+### Node.js (Frontend) ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+### React Build ###
+frontend/build/
+frontend/dist/
+
+### Java/Maven ###
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Spring Boot ###
+spring-boot-*.log
+application-*.yml
+application-*.yaml
+application-*.properties
+!application.properties
+!application-*.properties.example
+
+### Database ###
+*.db
+*.sqlite
+*.sqlite3
+
+### Temporary Files ###
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+### IDE Specific ###
+.metadata
+.recommenders
+
+### OS Generated ###
+*.pid
+*.seed
+*.pid.lock
+
+### Coverage Reports ###
+coverage/
+*.lcov
+
+### Backup Files ###
+*.bak
+*.backup

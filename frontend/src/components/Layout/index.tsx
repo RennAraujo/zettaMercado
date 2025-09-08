@@ -1,38 +1,37 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Box, CssBaseline } from '@mui/material';
+import React from 'react';
+import { Box } from '@mui/material';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-export default function Layout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const [open, setOpen] = React.useState(true);
+
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <CssBaseline />
-      <Navbar onMenuClick={toggleSidebar} />
-      <Sidebar open={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    <Box sx={{ display: 'flex' }}>
+      <Navbar open={open} toggleDrawer={toggleDrawer} />
+      <Sidebar open={open} />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${isSidebarOpen ? 240 : 0}px)` },
-          ml: { sm: isSidebarOpen ? '240px' : 0 },
-          transition: theme =>
-            theme.transitions.create(['margin', 'width'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
+          mt: 8,
+          backgroundColor: (theme) => theme.palette.background.default,
+          minHeight: '100vh',
         }}
       >
-        <Box sx={{ height: 64 }} /> {/* Toolbar spacer */}
-        <Outlet />
+        {children}
       </Box>
     </Box>
   );
-} 
+};
+
+export default Layout; 

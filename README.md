@@ -1,27 +1,26 @@
 # ZettaMercado - Sistema de Gerenciamento de Supermercado
 
 ## 📝 Descrição
-Sistema de gerenciamento de produtos de supermercado com funcionalidades de controle de estoque, precificação, carrinho de compras e autenticação em duas etapas.
+Sistema de gerenciamento de produtos de supermercado com funcionalidades de controle de estoque, precificação e carrinho de compras. Sistema dockerizado para fácil deploy em servidores Linux.
 
 ## 🛠️ Tecnologias Utilizadas
 - Java 17
 - Spring Boot 3.x
-- Spring Security
+- Spring Security (sem autenticação)
 - PostgreSQL
-- JWT + Google Authenticator (2FA)
+- Redis
 - React + TypeScript (Frontend)
-- Docker
+- Docker & Docker Compose
+- Nginx (para servir o frontend)
 
-## 🚀 Como Executar
+## 🚀 Deploy com Docker
 
 ### Pré-requisitos
-- Java 17
-- Maven
-- Docker e Docker Compose
-- Node.js 18+ (para o frontend)
-- PostgreSQL (via Docker)
+- Docker 20.10+
+- Docker Compose 2.0+
+- Servidor Ubuntu Linux (para produção)
 
-### Configuração do Ambiente
+### 🐳 Execução Local (Desenvolvimento)
 
 1. Clone o repositório
 ```bash
@@ -29,40 +28,96 @@ git clone https://github.com/seu-usuario/zettamercado.git
 cd zettamercado
 ```
 
-2. Configure as variáveis de ambiente
+2. Execute com Docker Compose
 ```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
+docker-compose up --build
 ```
 
-3. Inicie os containers Docker
-```bash
-docker-compose up -d
-```
-
-4. Execute a aplicação
-```bash
-./mvnw spring-boot:run
-```
-
-5. Acesse a aplicação
-- Backend: http://localhost:8080/api
+3. Acesse a aplicação
+- Frontend: http://localhost (porta 80)
+- Backend API: http://localhost:8080/api
 - Swagger: http://localhost:8080/api/swagger-ui.html
-- Frontend: http://localhost:3000
 
-## 🔐 Modo Demonstração
-Para testar todas as funcionalidades sem necessidade de login, utilize o token de demonstração:
+### 🖥️ Deploy em Servidor Ubuntu Linux
+
+#### 1. Preparação do Servidor
+```bash
+# Atualizar sistema
+sudo apt update && sudo apt upgrade -y
+
+# Instalar Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Instalar Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Reiniciar sessão para aplicar permissões
+newgrp docker
 ```
-Authorization: Bearer demo-token-for-recruiters
+
+#### 2. Deploy da Aplicação
+```bash
+# Clonar repositório
+git clone https://github.com/seu-usuario/zettamercado.git
+cd zettamercado
+
+# Executar em modo produção (detached)
+docker-compose up -d --build
+
+# Verificar status dos containers
+docker-compose ps
+
+# Ver logs (opcional)
+docker-compose logs -f
 ```
+
+#### 3. Configuração de Firewall (Ubuntu)
+```bash
+# Permitir tráfego HTTP e HTTPS
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 8080/tcp
+sudo ufw enable
+```
+
+#### 4. Comandos Úteis para Manutenção
+```bash
+# Parar aplicação
+docker-compose down
+
+# Atualizar aplicação
+git pull
+docker-compose down
+docker-compose up -d --build
+
+# Ver logs em tempo real
+docker-compose logs -f [service_name]
+
+# Backup do banco de dados
+docker-compose exec postgres pg_dump -U zettamercado zettamercado > backup.sql
+
+# Restaurar backup
+docker-compose exec -T postgres psql -U zettamercado zettamercado < backup.sql
+```
+
+## 🔓 Acesso Livre
+O sistema foi configurado sem autenticação para facilitar o acesso e demonstração. Todas as funcionalidades estão disponíveis diretamente.
 
 ## 📋 Funcionalidades
 - Gestão de produtos
 - Controle de estoque
 - Precificação
 - Carrinho de compras
-- Autenticação em duas etapas
-- Modo demonstração para recrutadores
+- Interface web responsiva
+- API REST documentada com Swagger
+- Deploy containerizado com Docker
+- **Acesso direto para recrutadores** - Botão especial na página de login
+- **Auto-refresh de dados** - Interface atualiza automaticamente
+- **Configuração CORS otimizada** - Suporte completo para frontend/backend
+- **Sistema de demonstração** - Dados de exemplo pré-carregados
 
 ## 🤝 Contribuindo
 1. Faça um fork do projeto

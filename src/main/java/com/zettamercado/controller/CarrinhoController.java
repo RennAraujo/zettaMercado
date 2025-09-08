@@ -28,7 +28,8 @@ public class CarrinhoController {
     @Operation(summary = "Buscar carrinho atual do usuário")
     public ResponseEntity<CarrinhoDTO> buscarCarrinhoAtual(
             @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(carrinhoService.buscarCarrinhoAtual(userDetails.getUsername()));
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        return ResponseEntity.ok(carrinhoService.buscarCarrinhoAtual(email));
     }
 
     @PostMapping("/atual/items")
@@ -36,7 +37,8 @@ public class CarrinhoController {
     public ResponseEntity<CarrinhoDTO> adicionarItem(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody ItemCarrinhoDTO item) {
-        return ResponseEntity.ok(carrinhoService.adicionarItem(userDetails.getUsername(), item));
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        return ResponseEntity.ok(carrinhoService.adicionarItem(email, item));
     }
 
     @PutMapping("/atual/items/{itemId}")
@@ -45,7 +47,8 @@ public class CarrinhoController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable UUID itemId,
             @RequestParam Integer quantidade) {
-        return ResponseEntity.ok(carrinhoService.atualizarQuantidade(userDetails.getUsername(), itemId, quantidade));
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        return ResponseEntity.ok(carrinhoService.atualizarQuantidade(email, itemId, quantidade));
     }
 
     @DeleteMapping("/atual/items/{itemId}")
@@ -53,21 +56,24 @@ public class CarrinhoController {
     public ResponseEntity<CarrinhoDTO> removerItem(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable UUID itemId) {
-        return ResponseEntity.ok(carrinhoService.removerItem(userDetails.getUsername(), itemId));
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        return ResponseEntity.ok(carrinhoService.removerItem(email, itemId));
     }
 
     @PostMapping("/atual/finalizar")
     @Operation(summary = "Finalizar compra")
     public ResponseEntity<CarrinhoDTO> finalizarCompra(
             @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(carrinhoService.finalizarCompra(userDetails.getUsername()));
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        return ResponseEntity.ok(carrinhoService.finalizarCompra(email));
     }
 
     @DeleteMapping("/atual")
     @Operation(summary = "Limpar carrinho")
     public ResponseEntity<Void> limparCarrinho(
             @AuthenticationPrincipal UserDetails userDetails) {
-        carrinhoService.limparCarrinho(userDetails.getUsername());
+        String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
+        carrinhoService.limparCarrinho(email);
         return ResponseEntity.noContent().build();
     }
-} 
+}

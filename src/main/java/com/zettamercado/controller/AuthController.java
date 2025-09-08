@@ -1,32 +1,26 @@
 package com.zettamercado.controller;
 
-import com.zettamercado.dto.LoginRequest;
-import com.zettamercado.dto.LoginResponse;
+import com.zettamercado.domain.Usuario;
 import com.zettamercado.dto.RegisterRequest;
 import com.zettamercado.dto.UsuarioDTO;
-import com.zettamercado.security.JwtTokenProvider;
-import com.zettamercado.security.TwoFactorAuthService;
 import com.zettamercado.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Autenticação", description = "Endpoints para autenticação de usuários")
+@Tag(name = "Autenticação", description = "Endpoints para registro de usuários")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
     private final UsuarioService usuarioService;
-    private final TwoFactorAuthService twoFactorAuthService;
 
     @PostMapping("/register")
     @Operation(summary = "Registrar novo usuário")
@@ -35,47 +29,25 @@ public class AuthController {
         return ResponseEntity.ok(usuario);
     }
 
-    @PostMapping("/login")
-    @Operation(summary = "Realizar login (primeira etapa)")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
-        );
-
-        String token = tokenProvider.generateToken(authentication);
-        String qrCodeUrl = null;
-
-        // Se for primeiro login, gera QR Code para 2FA
-        if (usuarioService.isPrimeiroLogin(request.getEmail())) {
-            String secret = twoFactorAuthService.generateNewSecret();
-            usuarioService.salvarSecret2FA(request.getEmail(), secret);
-            qrCodeUrl = twoFactorAuthService.generateQrCodeImageUri(secret);
-        }
-
-        return ResponseEntity.ok(new LoginResponse(token, qrCodeUrl));
+    @GetMapping("/demo")
+    @Operation(summary = "Endpoint de demonstração")
+    public ResponseEntity<String> demo() {
+        return ResponseEntity.ok("Sistema funcionando sem autenticação!");
     }
 
-    @PostMapping("/verify-2fa")
-    @Operation(summary = "Verificar código 2FA (segunda etapa)")
-    public ResponseEntity<LoginResponse> verify2FA(@RequestParam String email, @RequestParam String code) {
-        if (usuarioService.verificar2FA(email, code)) {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, "")
-            );
-            String token = tokenProvider.generateToken(authentication);
-            return ResponseEntity.ok(new LoginResponse(token, null));
-        }
-        return ResponseEntity.badRequest().build();
+    @PostMapping("/recruiter-access")
+    @Operation(summary = "Acesso para recrutadores sem cadastro")
+    public ResponseEntity<UsuarioDTO> recruiterAccess() {
+        // Criar usuário temporário para recrutadores
+        UsuarioDTO recruiterUser = new UsuarioDTO();
+        recruiterUser.setId(UUID.fromString("00000000-0000-0000-0000-000000000999"));
+        recruiterUser.setNome("Recrutador");
+        recruiterUser.setEmail("recruiter@demo.com");
+        recruiterUser.setPerfil(Usuario.PerfilUsuario.DEMO);
+        recruiterUser.setStatus(Usuario.StatusUsuario.ATIVO);
+        recruiterUser.setDataCriacao(LocalDateTime.now());
+        recruiterUser.setDataAtualizacao(LocalDateTime.now());
+        
+        return ResponseEntity.ok(recruiterUser);
     }
-
-    @PostMapping("/refresh-token")
-    @Operation(summary = "Renovar token de acesso")
-    public ResponseEntity<LoginResponse> refreshToken(@RequestHeader("Authorization") String token) {
-        if (tokenProvider.validateToken(token.replace("Bearer ", ""))) {
-            Authentication authentication = tokenProvider.getAuthentication(token.replace("Bearer ", ""));
-            String newToken = tokenProvider.generateToken(authentication);
-            return ResponseEntity.ok(new LoginResponse(newToken, null));
-        }
-        return ResponseEntity.badRequest().build();
-    }
-} 
+}

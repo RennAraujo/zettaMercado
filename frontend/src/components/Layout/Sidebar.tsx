@@ -1,128 +1,99 @@
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   Drawer,
   List,
-  ListItemButton,
+  ListItem,
   ListItemIcon,
   ListItemText,
   Divider,
-  IconButton,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import {
-  Home,
-  Store,
-  Category,
-  ChevronLeft,
-  ShoppingCart,
+  Home as HomeIcon,
+  ShoppingCart as CartIcon,
+  Category as CategoryIcon,
+  Inventory as ProductIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+
+const drawerWidth = 240;
 
 interface SidebarProps {
   open: boolean;
-  onClose: () => void;
 }
 
-export default function Sidebar({ open, onClose }: SidebarProps) {
+const Sidebar: React.FC<SidebarProps> = ({ open }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { user } = useAuth();
 
   const menuItems = [
-    { text: 'Home', icon: <Home />, path: '/' },
-    { text: 'Produtos', icon: <Store />, path: '/produtos' },
-    { text: 'Carrinho', icon: <ShoppingCart />, path: '/carrinho' },
+    { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'Produtos', icon: <ProductIcon />, path: '/produtos' },
+    { text: 'Carrinho', icon: <CartIcon />, path: '/carrinho' },
   ];
 
-  const adminMenuItems = [
-    { text: 'Gerenciar Produtos', icon: <Store />, path: '/admin/produtos' },
-    { text: 'Gerenciar Categorias', icon: <Category />, path: '/admin/categorias' },
+  const adminItems = [
+    { text: 'Gerenciar Produtos', icon: <ProductIcon />, path: '/admin/produtos' },
+    { text: 'Gerenciar Categorias', icon: <CategoryIcon />, path: '/admin/categorias' },
   ];
-
-  const handleNavigate = (path: string) => {
-    navigate(path);
-    if (isMobile) {
-      onClose();
-    }
-  };
-
-  const drawerContent = (
-    <>
-      <List>
-        {menuItems.map((item) => (
-          <ListItemButton
-            key={item.text}
-            onClick={() => handleNavigate(item.path)}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItemButton>
-        ))}
-      </List>
-
-      {user?.perfil === 'ADMIN' && (
-        <>
-          <Divider />
-          <List>
-            {adminMenuItems.map((item) => (
-              <ListItemButton
-                key={item.text}
-                onClick={() => handleNavigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            ))}
-          </List>
-        </>
-      )}
-    </>
-  );
-
-  if (isMobile) {
-    return (
-      <Drawer
-        variant="temporary"
-        anchor="left"
-        open={open}
-        onClose={onClose}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile
-        }}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
-          },
-        }}
-      >
-        <IconButton onClick={onClose} sx={{ m: 1 }}>
-          <ChevronLeft />
-        </IconButton>
-        {drawerContent}
-      </Drawer>
-    );
-  }
 
   return (
     <Drawer
-      variant="persistent"
-      anchor="left"
-      open={open}
+      variant="permanent"
       sx={{
-        width: 240,
+        width: drawerWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 240,
+          width: drawerWidth,
           boxSizing: 'border-box',
-          top: '64px',
-          height: 'calc(100% - 64px)',
+          whiteSpace: 'nowrap',
+          transition: (theme) =>
+            theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+          ...(!open && {
+            width: theme => theme.spacing(7),
+            overflowX: 'hidden',
+            transition: theme =>
+              theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+          }),
         },
       }}
     >
-      {drawerContent}
+      <List sx={{ mt: 8 }}>
+        {menuItems.map((item) => (
+          <ListItem
+            button
+            key={item.text}
+            onClick={() => navigate(item.path)}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+
+        {user?.role === 'ADMIN' && (
+          <>
+            <Divider />
+            {adminItems.map((item) => (
+              <ListItem
+                button
+                key={item.text}
+                onClick={() => navigate(item.path)}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+          </>
+        )}
+      </List>
     </Drawer>
   );
-} 
+};
+
+export default Sidebar; 

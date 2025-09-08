@@ -1,151 +1,91 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import api from '../services/api';
 
 interface User {
-  id: string;
+  id: number;
   nome: string;
   email: string;
-  perfil: string;
-}
-
-interface AuthState {
-  token: string;
-  user: User;
-}
-
-interface SignInCredentials {
-  email: string;
-  senha: string;
-  code2FA?: string;
+  role?: string;
 }
 
 interface AuthContextData {
-  user: User;
-  signIn: (credentials: SignInCredentials) => Promise<void>;
+  user: User | null;
+  signed: boolean;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signInAsRecruiter: () => Promise<void>;
   signOut: () => void;
-  isAuthenticated: boolean;
-  isDemoMode: boolean;
-  enableDemoMode: () => Promise<void>;
-  disableDemoMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
-  const navigate = useNavigate();
-  const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@ZettaMercado:token');
-    const user = localStorage.getItem('@ZettaMercado:user');
-
-    if (token && user) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      return { token, user: JSON.parse(user) };
-    }
-
-    return {} as AuthState;
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
   });
+  const [loading, setLoading] = useState(false);
 
-  const [isDemoMode, setIsDemoMode] = useState(() => {
-    return localStorage.getItem('@ZettaMercado:demoMode') === 'true';
-  });
-
-  const signIn = useCallback(async ({ email, senha, code2FA }: SignInCredentials) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, senha });
-      const { token, qrCodeUrl } = response.data;
+      setLoading(true);
+      const response = await api.post('/auth/login', { email, password });
+      const { token, user: userData } = response.data;
 
-      if (qrCodeUrl) {
-        // Primeiro login, precisa configurar 2FA
-        localStorage.setItem('@ZettaMercado:tempToken', token);
-        navigate('/setup-2fa', { state: { qrCodeUrl } });
-        return;
-      }
-
-      if (!code2FA) {
-        // Precisa do código 2FA
-        localStorage.setItem('@ZettaMercado:tempToken', token);
-        navigate('/verify-2fa', { state: { email } });
-        return;
-      }
-
-      // Verificar código 2FA
-      const verify2FAResponse = await api.post('/auth/verify-2fa', { email, code: code2FA });
-      const { token: finalToken } = verify2FAResponse.data;
-
-      const userResponse = await api.get('/usuarios/me', {
-        headers: { Authorization: `Bearer ${finalToken}` }
-      });
-
-      localStorage.setItem('@ZettaMercado:token', finalToken);
-      localStorage.setItem('@ZettaMercado:user', JSON.stringify(userResponse.data));
-
-      api.defaults.headers.authorization = `Bearer ${finalToken}`;
-
-      setData({ token: finalToken, user: userResponse.data });
-      navigate('/');
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
     } catch (error) {
-      toast.error('Erro ao fazer login. Verifique suas credenciais.');
+      throw error;
+    } finally {
+      setLoading(false);
     }
-  }, [navigate]);
+  }, []);
+
+  const signInAsRecruiter = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.post('/api/auth/recruiter-access');
+      const userData = response.data;
+
+      // Não salvamos token para recrutadores, apenas os dados do usuário
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('recruiter-mode', 'true');
+      setUser(userData);
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@ZettaMercado:token');
-    localStorage.removeItem('@ZettaMercado:user');
-    localStorage.removeItem('@ZettaMercado:demoMode');
-    setData({} as AuthState);
-    setIsDemoMode(false);
-    navigate('/login');
-  }, [navigate]);
-
-  const enableDemoMode = useCallback(async () => {
-    try {
-      const response = await api.get('/demo/token');
-      const { token } = response.data;
-
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      localStorage.setItem('@ZettaMercado:demoMode', 'true');
-      setIsDemoMode(true);
-      navigate('/');
-    } catch (error) {
-      toast.error('Erro ao ativar modo demonstração.');
-    }
-  }, [navigate]);
-
-  const disableDemoMode = useCallback(() => {
-    localStorage.removeItem('@ZettaMercado:demoMode');
-    setIsDemoMode(false);
-    navigate('/login');
-  }, [navigate]);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('recruiter-mode');
+    setUser(null);
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user: data.user,
+        user,
+        signed: !!user,
+        loading,
         signIn,
+        signInAsRecruiter,
         signOut,
-        isAuthenticated: !!data.token,
-        isDemoMode,
-        enableDemoMode,
-        disableDemoMode,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth(): AuthContextData {
+export const useAuth = (): AuthContextData => {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
   return context;
-} 
+};

@@ -1,20 +1,16 @@
 package com.zettamercado.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class DemoModeService {
 
-    @Value("${security.demo-mode.enabled}")
+    @Value("${security.demo-mode.enabled:true}")
     private boolean demoModeEnabled;
 
-    @Value("${security.demo-mode.token}")
+    @Value("${security.demo-mode.token:demo-token}")
     private String demoToken;
-
-    private final JwtTokenProvider tokenProvider;
 
     public boolean isDemoModeEnabled() {
         return demoModeEnabled;
@@ -28,6 +24,6 @@ public class DemoModeService {
         if (!demoModeEnabled) {
             throw new IllegalStateException("Demo mode is not enabled");
         }
-        return tokenProvider.generateDemoToken();
+        return demoToken;
     }
-} 
+}
