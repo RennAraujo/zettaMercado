@@ -35,7 +35,7 @@ const Home: React.FC = () => {
     try {
       setError('');
       const response = await api.get('/produtos');
-      setProdutos(response.data);
+      setProdutos(response.data.content || response.data);
       setLastUpdate(new Date());
     } catch (err) {
       setError('Erro ao carregar produtos');

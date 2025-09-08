@@ -10,8 +10,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProdutoMapper {
     
-    @Mapping(target = "categoriaId", source = "categoria.id")
-    @Mapping(target = "categoriaNome", source = "categoria.nome")
+    @Mapping(target = "categoriaId", expression = "java(produto.getCategoria() != null ? produto.getCategoria().getId() : null)")
+    @Mapping(target = "categoriaNome", expression = "java(produto.getCategoria() != null ? produto.getCategoria().getNome() : \"Sem categoria\")")
     ProdutoDTO toDTO(Produto produto);
     
     @Mapping(target = "categoria.id", source = "categoriaId")
@@ -22,4 +22,4 @@ public interface ProdutoMapper {
     @Mapping(target = "dataCriacao", ignore = true)
     @Mapping(target = "version", ignore = true)
     void updateEntity(ProdutoDTO dto, @MappingTarget Produto produto);
-} 
+}

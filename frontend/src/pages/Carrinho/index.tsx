@@ -120,7 +120,7 @@ const Carrinho: React.FC = () => {
     );
   }
 
-  if (!carrinho || carrinho.itens.length === 0) {
+  if (!carrinho || !carrinho.itens || carrinho.itens.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -165,7 +165,7 @@ const Carrinho: React.FC = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          {carrinho.itens.map((item) => (
+          {carrinho?.itens?.map((item) => (
             <Card key={item.id} sx={{ mb: 2 }}>
               <CardContent>
                 <Grid container spacing={2} alignItems="center">
@@ -240,8 +240,8 @@ const Carrinho: React.FC = () => {
               <Divider sx={{ my: 2 }} />
               
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography>Itens ({carrinho.quantidadeItens}):</Typography>
-                <Typography>R$ {carrinho.valorTotal.toFixed(2)}</Typography>
+                <Typography>Itens ({carrinho?.quantidadeItens || 0}):</Typography>
+                <Typography>R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}</Typography>
               </Box>
               
               <Divider sx={{ my: 2 }} />
@@ -249,7 +249,7 @@ const Carrinho: React.FC = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h6">Total:</Typography>
                 <Typography variant="h6" color="primary">
-                  R$ {carrinho.valorTotal.toFixed(2)}
+                  R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}
                 </Typography>
               </Box>
               

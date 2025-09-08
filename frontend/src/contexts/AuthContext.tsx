@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInAsRecruiter = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.post('/api/auth/recruiter-access');
+      const response = await api.post('/auth/recruiter-access');
       const userData = response.data;
 
       // Não salvamos token para recrutadores, apenas os dados do usuário

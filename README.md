@@ -119,6 +119,14 @@ O sistema foi configurado sem autenticação para facilitar o acesso e demonstra
 - **Configuração CORS otimizada** - Suporte completo para frontend/backend
 - **Sistema de demonstração** - Dados de exemplo pré-carregados
 
+## 🐛 Correções Recentes
+### v1.1.0 - Correção de Bugs JavaScript
+- **Corrigido erro "r.map is not a function"** em todas as páginas
+- **Tratamento de API paginada**: Páginas Home e Produtos agora processam corretamente `response.data.content`
+- **Carrinho com null safety**: Adicionado optional chaining (`?.`) para evitar erros quando dados não estão carregados
+- **Navegação aprimorada**: Fluxo completo entre páginas funcionando perfeitamente
+- **Estabilidade melhorada**: Frontend mais robusto com tratamento de erros adequado
+
 ## 🤝 Contribuindo
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)

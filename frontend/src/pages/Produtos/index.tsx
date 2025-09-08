@@ -66,8 +66,8 @@ const Produtos: React.FC = () => {
         api.get('/produtos'),
         api.get('/categorias'),
       ]);
-      setProdutos(produtosResponse.data);
-      setCategorias(categoriasResponse.data);
+      setProdutos(produtosResponse.data.content || produtosResponse.data);
+      setCategorias(categoriasResponse.data.content || categoriasResponse.data);
       setLastUpdate(new Date());
     } catch (err) {
       setError('Erro ao carregar dados');
