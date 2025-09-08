@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import Routes from './routes';
 import Layout from './components/Layout';
 import { useAuth } from './contexts/AuthContext';
+
+const LoadingFallback = () => (
+  <Box 
+    sx={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: '100vh' 
+    }}
+  >
+    <CircularProgress />
+  </Box>
+);
 
 const App: React.FC = () => {
   const { signed } = useAuth();
@@ -11,16 +24,18 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        {signed ? (
-          <Layout>
+        <Suspense fallback={<LoadingFallback />}>
+          {signed ? (
+            <Layout>
+              <Routes />
+            </Layout>
+          ) : (
             <Routes />
-          </Layout>
-        ) : (
-          <Routes />
-        )}
+          )}
+        </Suspense>
       </Box>
     </BrowserRouter>
   );
 };
 
-export default App; 
+export default App;
