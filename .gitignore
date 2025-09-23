@@ -84,6 +84,14 @@ application-*.properties
 *.db
 *.sqlite
 *.sqlite3
+*.dump
+*.sql.bak
+*.pgsql
+
+### PostgreSQL ###
+pg_data/
+postgresql/
+*.pgdump
 
 ### Temporary Files ###
 *.tmp
@@ -91,6 +99,16 @@ application-*.properties
 *.swp
 *.swo
 *~
+*.bak
+*.orig
+
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
 
 ### IDE Specific ###
 .metadata
