@@ -1,4 +1,4 @@
--- Criacao da tabela de usuarios (MySQL compativel)
+-- Criacao da tabela de usuarios (PostgreSQL compativel)
 CREATE TABLE usuarios (
     id VARCHAR(36) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE usuarios (
     perfil VARCHAR(20) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'ATIVO',
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Criacao da tabela de categorias
@@ -18,7 +18,7 @@ CREATE TABLE categorias (
     descricao TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'ATIVA',
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Criacao da tabela de produtos
@@ -34,7 +34,7 @@ CREATE TABLE produtos (
     data_validade DATE,
     status VARCHAR(20) NOT NULL DEFAULT 'ATIVO',
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version BIGINT NOT NULL DEFAULT 0,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
@@ -45,7 +45,7 @@ CREATE TABLE carrinhos (
     usuario_id VARCHAR(36) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'ABERTO',
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version BIGINT NOT NULL DEFAULT 0,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
@@ -59,7 +59,7 @@ CREATE TABLE itens_carrinho (
     preco_unitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version BIGINT NOT NULL DEFAULT 0,
     FOREIGN KEY (carrinho_id) REFERENCES carrinhos(id),
     FOREIGN KEY (produto_id) REFERENCES produtos(id)

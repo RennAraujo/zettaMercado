@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/carrinhos")
@@ -45,7 +45,7 @@ public class CarrinhoController {
     @Operation(summary = "Atualizar quantidade de um item")
     public ResponseEntity<CarrinhoDTO> atualizarQuantidade(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable UUID itemId,
+            @PathVariable String itemId,
             @RequestParam Integer quantidade) {
         String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
         return ResponseEntity.ok(carrinhoService.atualizarQuantidade(email, itemId, quantidade));
@@ -55,7 +55,7 @@ public class CarrinhoController {
     @Operation(summary = "Remover item do carrinho")
     public ResponseEntity<CarrinhoDTO> removerItem(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable UUID itemId) {
+            @PathVariable String itemId) {
         String email = userDetails != null ? userDetails.getUsername() : "demo@zettamercado.com";
         return ResponseEntity.ok(carrinhoService.removerItem(email, itemId));
     }

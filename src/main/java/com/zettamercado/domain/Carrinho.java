@@ -6,17 +6,14 @@ import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 @Data
 @Entity
 @Table(name = "carrinhos")
 public class Carrinho {
     
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @Column(length = 36)
+    private String id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -51,4 +48,4 @@ public class Carrinho {
         itens.remove(item);
         item.setCarrinho(null);
     }
-} 
+}

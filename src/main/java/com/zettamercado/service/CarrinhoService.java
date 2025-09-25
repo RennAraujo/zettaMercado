@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +64,7 @@ public class CarrinhoService {
     }
 
     @Transactional
-    public CarrinhoDTO atualizarQuantidade(String email, UUID itemId, Integer quantidade) {
+    public CarrinhoDTO atualizarQuantidade(String email, String itemId, Integer quantidade) {
         Carrinho carrinho = obterCarrinhoAberto(email);
         ItemCarrinho item = carrinho.getItens().stream()
                 .filter(i -> i.getId().equals(itemId))
@@ -82,7 +82,7 @@ public class CarrinhoService {
     }
 
     @Transactional
-    public CarrinhoDTO removerItem(String email, UUID itemId) {
+    public CarrinhoDTO removerItem(String email, String itemId) {
         Carrinho carrinho = obterCarrinhoAberto(email);
         ItemCarrinho item = carrinho.getItens().stream()
                 .filter(i -> i.getId().equals(itemId))
@@ -146,4 +146,4 @@ public class CarrinhoService {
         return carrinhoRepository.findByUsuarioEmailAndStatus(email, Carrinho.StatusCarrinho.ABERTO)
                 .orElseThrow(() -> new EntityNotFoundException("Carrinho não encontrado"));
     }
-} 
+}

@@ -1,65 +1,55 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: zettamercado-mysql
+  postgres:
+    image: postgres:15
+    container_name: zettamercado-postgres
     environment:
-      MYSQL_DATABASE: zettamercado
-      MYSQL_USER: zettamercado
-      MYSQL_PASSWORD: zettamercado
-      MYSQL_ROOT_PASSWORD: rootpassword
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - zettamercado-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:7-alpine
     container_name: zettamercado-redis
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
     networks:
       - zettamercado-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: zettamercado-backend
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/zettamercado
-      SPRING_DATASOURCE_USERNAME: zettamercado
-      SPRING_DATASOURCE_PASSWORD: zettamercado
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SERVER_PORT: ${SERVER_PORT}
+      DEMO_TOKEN: ${DEMO_TOKEN}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT}
+      LOGGING_LEVEL_APP: ${LOGGING_LEVEL_APP}
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE}
+      MAX_REQUEST_SIZE: ${MAX_REQUEST_SIZE}
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
+      - postgres
       - redis
     networks:
       - zettamercado-network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     container_name: zettamercado-frontend
     ports:
       - "80:80"
@@ -69,8 +59,7 @@ services:
       - zettamercado-network
 
 volumes:
-  mysql_data:
-  redis_data:
+  postgres_data:
 
 networks:
   zettamercado-network:

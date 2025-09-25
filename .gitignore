@@ -1,128 +1,226 @@
-HELP.md
+# ================================
+# JAVA & SPRING BOOT
+# ================================
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# Spring Boot
+*.pid
+*.pid.lock
+
+# ================================
+# BUILD TOOLS
+# ================================
+# Maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### IntelliJ IDEA ###
-.idea
+# ================================
+# IDEs & EDITORS
+# ================================
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# Visual Studio Code
 .vscode/
 
-### Environment Variables ###
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# ================================
+# NODE.JS & FRONTEND
+# ================================
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+.nyc_output
+
+# Build outputs
+.next
+out
+.nuxt
+dist/
+.cache/
+.parcel-cache
+
+# Storybook
+.out
+.storybook-out
+storybook-static
+
+# Cache directories
+.npm
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional files
+.node_repl_history
+*.tgz
+.yarn-integrity
+
+# ================================
+# ENVIRONMENT & SECURITY
+# ================================
+# Environment variables (CRÍTICO - NUNCA COMMITAR)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-### Logs ###
-*.log
-logs/
-log/
+# Certificados e chaves de segurança
+*.key
+*.pem
+*.p12
+*.jks
+*.crt
+*.csr
 
-### Docker ###
-docker-compose.override.yml
+# Diretórios de segurança
+secrets/
+credentials/
+certs/
 
-### System Files ###
+# Tokens e configurações sensíveis
+auth.json
+config.json
+*.token
+
+# ================================
+# OPERATING SYSTEM
+# ================================
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 
-### Node.js (Frontend) ###
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.yarn-integrity
+# Linux
+*~
 
-### React Build ###
-frontend/build/
-frontend/dist/
+# ================================
+# DOCKER & CONTAINERS
+# ================================
+.dockerignore
 
-### Java/Maven ###
-*.class
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-### Spring Boot ###
-spring-boot-*.log
-application-*.yml
-application-*.yaml
-application-*.properties
-!application.properties
-!application-*.properties.example
-
-### Database ###
+# ================================
+# DATABASE
+# ================================
 *.db
 *.sqlite
 *.sqlite3
-*.dump
-*.sql.bak
-*.pgsql
+*.db-journal
 
-### PostgreSQL ###
-pg_data/
-postgresql/
-*.pgdump
-
-### Temporary Files ###
+# ================================
+# BACKUP & TEMPORARY FILES
+# ================================
+*.bak
+*.backup
+*.old
+*.orig
 *.tmp
 *.temp
 *.swp
 *.swo
-*~
-*.bak
-*.orig
 
-### Python ###
+# ================================
+# PYTHON (Scripts auxiliares)
+# ================================
 __pycache__/
 *.py[cod]
 *$py.class
-.venv/
+*.so
+.Python
+env/
 venv/
+.venv/
 ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
 
-### IDE Specific ###
-.metadata
-.recommenders
-
-### OS Generated ###
-*.pid
-*.seed
-*.pid.lock
-
-### Coverage Reports ###
-coverage/
-*.lcov
-
-### Backup Files ###
-*.bak
-*.backup
+# ================================
+# LOGS & MONITORING
+# ================================
+logs/
+*.log
+*.log.*

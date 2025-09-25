@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class ProdutoService {
     private static final String UPLOAD_DIR = "uploads/produtos";
 
     @Transactional(readOnly = true)
-    public Page<ProdutoDTO> listar(String nome, UUID categoriaId, Boolean emEstoque, Pageable pageable) {
+    public Page<ProdutoDTO> listar(String nome, String categoriaId, Boolean emEstoque, Pageable pageable) {
         // Por enquanto, retorna todos os produtos - implementação simplificada
         if (nome != null && !nome.trim().isEmpty()) {
             return produtoRepository.findByNomeContainingIgnoreCase(nome, pageable)
@@ -44,7 +44,7 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
-    public ProdutoDTO buscarPorId(UUID id) {
+    public ProdutoDTO buscarPorId(String id) {
         return produtoRepository.findById(id)
                 .map(produtoMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
@@ -59,21 +59,21 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ProdutoDTO atualizar(UUID id, ProdutoDTO dto) {
+    public ProdutoDTO atualizar(String id, ProdutoDTO produtoDTO) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
-        if (dto.getCategoriaId() != null && !dto.getCategoriaId().equals(produto.getCategoria().getId())) {
-            produto.setCategoria(categoriaRepository.findById(dto.getCategoriaId())
+        if (produtoDTO.getCategoriaId() != null && !produtoDTO.getCategoriaId().equals(produto.getCategoria().getId())) {
+            produto.setCategoria(categoriaRepository.findById(produtoDTO.getCategoriaId())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada")));
         }
 
-        produtoMapper.updateEntity(dto, produto);
+        produtoMapper.updateEntity(produtoDTO, produto);
         return produtoMapper.toDTO(produtoRepository.save(produto));
     }
 
     @Transactional
-    public void excluir(UUID id) {
+    public void excluir(String id) {
         if (!produtoRepository.existsById(id)) {
             throw new EntityNotFoundException("Produto não encontrado");
         }
@@ -81,7 +81,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ProdutoDTO uploadImagem(UUID id, MultipartFile imagem) {
+    public ProdutoDTO uploadImagem(String id, MultipartFile imagem) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
@@ -103,7 +103,7 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ProdutoDTO atualizarEstoque(UUID id, Integer quantidade) {
+    public ProdutoDTO atualizarEstoque(String id, Integer quantidade) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 

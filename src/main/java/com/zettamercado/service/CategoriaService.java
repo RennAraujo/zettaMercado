@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +35,7 @@ public class CategoriaService {
     }
 
     @Transactional(readOnly = true)
-    public CategoriaDTO buscarPorId(UUID id) {
+    public CategoriaDTO buscarPorId(String id) {
         return categoriaRepository.findById(id)
                 .map(categoriaMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
@@ -49,7 +49,7 @@ public class CategoriaService {
     }
 
     @Transactional
-    public CategoriaDTO atualizar(UUID id, CategoriaDTO dto) {
+    public CategoriaDTO atualizar(String id, CategoriaDTO dto) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
@@ -58,11 +58,11 @@ public class CategoriaService {
     }
 
     @Transactional
-    public void excluir(UUID id) {
+    public void excluir(String id) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
         categoria.setStatus(Categoria.StatusCategoria.INATIVA);
         categoriaRepository.save(categoria);
     }
-} 
+}

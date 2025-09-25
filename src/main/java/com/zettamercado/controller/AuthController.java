@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,7 +40,7 @@ public class AuthController {
     public ResponseEntity<UsuarioDTO> recruiterAccess() {
         // Criar usuário temporário para recrutadores
         UsuarioDTO recruiterUser = new UsuarioDTO();
-        recruiterUser.setId(UUID.fromString("00000000-0000-0000-0000-000000000999"));
+        recruiterUser.setId("00000000-0000-0000-0000-000000000999");
         recruiterUser.setNome("Recrutador");
         recruiterUser.setEmail("recruiter@demo.com");
         recruiterUser.setPerfil(Usuario.PerfilUsuario.DEMO);

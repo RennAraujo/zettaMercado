@@ -6,12 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 @Data
 public class CarrinhoDTO {
-    private UUID id;
-    private UUID usuarioId;
+    private String id;
+    private String usuarioId;
     private List<ItemCarrinhoDTO> itens = new ArrayList<>();
     private StatusCarrinho status;
     private LocalDateTime dataCriacao;
@@ -32,4 +30,4 @@ public class CarrinhoDTO {
                 .mapToInt(ItemCarrinhoDTO::getQuantidade)
                 .sum();
     }
-} 
+}

@@ -4,17 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Data
 @Entity
 @Table(name = "categorias")
 public class Categoria {
     
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @Column(length = 36)
+    private String id;
     
     @Column(nullable = false, length = 100)
     private String nome;

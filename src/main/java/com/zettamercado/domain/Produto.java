@@ -6,17 +6,14 @@ import org.hibernate.annotations.GenericGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Data
 @Entity
 @Table(name = "produtos")
 public class Produto {
     
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @Column(length = 36)
+    private String id;
     
     @Column(nullable = false, length = 100)
     private String nome;

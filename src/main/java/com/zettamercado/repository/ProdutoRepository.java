@@ -8,16 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
+public interface ProdutoRepository extends JpaRepository<Produto, String> {
     
     // Método simples para buscar todos os produtos
     Page<Produto> findAll(Pageable pageable);
     
     // Método para buscar por categoria
-    Page<Produto> findByCategoriaId(UUID categoriaId, Pageable pageable);
+    Page<Produto> findByCategoriaId(String categoriaId, Pageable pageable);
     
     // Método para buscar por nome contendo
     Page<Produto> findByNomeContainingIgnoreCase(String nome, Pageable pageable);

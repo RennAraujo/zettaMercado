@@ -1,17 +1,52 @@
 # ZettaMercado - Sistema de Gerenciamento de Supermercado
 
 ## 📝 Descrição
-Sistema de gerenciamento de produtos de supermercado com funcionalidades de controle de estoque, precificação e carrinho de compras. Sistema dockerizado para fácil deploy em servidores Linux.
+Sistema de gerenciamento de produtos de supermercado com funcionalidades de controle de estoque, precificação e carrinho de compras. Sistema dockerizado para fácil deploy em servidores Linux com **configurações de segurança aprimoradas**.
 
 ## 🛠️ Tecnologias Utilizadas
 - Java 17
 - Spring Boot 3.x
-- Spring Security (sem autenticação)
+- Spring Security (com configurações de segurança aprimoradas)
 - PostgreSQL
 - Redis
 - React + TypeScript (Frontend)
 - Docker & Docker Compose
 - Nginx (para servir o frontend)
+
+## 🔐 Configuração de Segurança
+
+### ⚠️ IMPORTANTE: Configuração de Variáveis de Ambiente
+
+**ANTES DE EXECUTAR A APLICAÇÃO**, você deve configurar as variáveis de ambiente:
+
+1. **Copie o arquivo de exemplo:**
+```bash
+cp .env.example .env
+```
+
+2. **Edite o arquivo `.env` com suas configurações:**
+```bash
+# Exemplo de configurações necessárias
+DB_PASSWORD=sua_senha_segura_aqui
+JWT_SECRET=sua_chave_jwt_256_bits_aqui
+SECURITY_DEMO_TOKEN=seu_token_demo_seguro_aqui
+```
+
+### 🛡️ Melhorias de Segurança Implementadas
+- ✅ **Credenciais externalizadas** - Todas as senhas e tokens agora estão em variáveis de ambiente
+- ✅ **Headers de segurança** - X-Frame-Options, X-Content-Type-Options, XSS Protection
+- ✅ **Logs mascarados** - Dados sensíveis são mascarados nos logs de auditoria
+- ✅ **CORS configurável** - Origens permitidas configuráveis por ambiente
+- ✅ **Autorização granular** - Endpoints protegidos com diferentes níveis de acesso
+- ✅ **BCrypt aprimorado** - Força de hash aumentada para 12 rounds
+
+### 📋 Variáveis de Ambiente Obrigatórias
+Consulte o arquivo `.env.example` para ver todas as variáveis necessárias:
+- `DB_PASSWORD` - Senha do banco PostgreSQL
+- `JWT_SECRET` - Chave secreta para tokens JWT (256 bits)
+- `SECURITY_DEMO_TOKEN` - Token para acesso de demonstração
+- `ENCRYPTION_SALT` - Salt para criptografia
+- E outras configurações de ambiente...
 
 ## 🚀 Deploy com Docker
 
@@ -28,12 +63,21 @@ git clone https://github.com/seu-usuario/zettamercado.git
 cd zettamercado
 ```
 
-2. Execute com Docker Compose
+2. **Configure as variáveis de ambiente (OBRIGATÓRIO):**
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
+
+# Edite o arquivo .env com suas configurações
+# IMPORTANTE: Configure pelo menos DB_PASSWORD, JWT_SECRET e SECURITY_DEMO_TOKEN
+```
+
+3. Execute com Docker Compose
 ```bash
 docker-compose up --build
 ```
 
-3. Acesse a aplicação
+4. Acesse a aplicação
 - Frontend: http://localhost (porta 80)
 - Backend API: http://localhost:8080/api
 - Swagger: http://localhost:8080/api/swagger-ui.html
@@ -63,6 +107,10 @@ newgrp docker
 # Clonar repositório
 git clone https://github.com/seu-usuario/zettamercado.git
 cd zettamercado
+
+# IMPORTANTE: Configurar variáveis de ambiente para produção
+cp .env.example .env
+# Edite o .env com configurações de produção seguras
 
 # Executar em modo produção (detached)
 docker-compose up -d --build
@@ -103,8 +151,8 @@ docker-compose exec postgres pg_dump -U zettamercado zettamercado > backup.sql
 docker-compose exec -T postgres psql -U zettamercado zettamercado < backup.sql
 ```
 
-## 🔓 Acesso Livre
-O sistema foi configurado sem autenticação para facilitar o acesso e demonstração. Todas as funcionalidades estão disponíveis diretamente.
+## 🔓 Configuração de Acesso
+O sistema possui configurações de segurança aprimoradas com acesso controlado. Para demonstração, utilize o token configurado em `SECURITY_DEMO_TOKEN`.
 
 ## 📋 Funcionalidades
 - Gestão de produtos
@@ -114,12 +162,25 @@ O sistema foi configurado sem autenticação para facilitar o acesso e demonstra
 - Interface web responsiva
 - API REST documentada com Swagger
 - Deploy containerizado com Docker
-- **Acesso direto para recrutadores** - Botão especial na página de login
+- **Segurança aprimorada** - Configurações de segurança robustas
+- **Variáveis de ambiente** - Configurações externalizadas
+- **Logs seguros** - Mascaramento de dados sensíveis
 - **Auto-refresh de dados** - Interface atualiza automaticamente
 - **Configuração CORS otimizada** - Suporte completo para frontend/backend
 - **Sistema de demonstração** - Dados de exemplo pré-carregados
 
+## 🔒 Relatório de Segurança
+Para informações detalhadas sobre as melhorias de segurança implementadas, consulte o arquivo `SECURITY_REPORT.md`.
+
 ## 🐛 Correções Recentes
+### v1.2.0 - Auditoria de Segurança Completa
+- **✅ Credenciais externalizadas** - Todas as configurações sensíveis movidas para `.env`
+- **✅ Headers de segurança** - Implementados headers de proteção (XSS, CSRF, etc.)
+- **✅ Logs mascarados** - Dados pessoais e tokens são mascarados nos logs
+- **✅ CORS configurável** - Origens permitidas configuráveis por ambiente
+- **✅ Autorização granular** - Endpoints com diferentes níveis de proteção
+- **✅ .gitignore aprimorado** - Proteção contra commit de dados sensíveis
+
 ### v1.1.0 - Correção de Bugs JavaScript
 - **Corrigido erro "r.map is not a function"** em todas as páginas
 - **Tratamento de API paginada**: Páginas Home e Produtos agora processam corretamente `response.data.content`

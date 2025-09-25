@@ -5,17 +5,14 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Data
 @Entity
 @Table(name = "itens_carrinho")
 public class ItemCarrinho {
     
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @Column(length = 36)
+    private String id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "carrinho_id", nullable = false)
@@ -50,4 +47,4 @@ public class ItemCarrinho {
             this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
         }
     }
-} 
+}

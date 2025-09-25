@@ -5,16 +5,14 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Data
 public class ProdutoDTO {
-    private UUID id;
+    private String id;
     private String nome;
     private String descricao;
     private BigDecimal preco;
     private Integer quantidadeEstoque;
-    private UUID categoriaId;
+    private String categoriaId;
     private String codigoBarras;
     private String imagemUrl;
     private LocalDate dataValidade;
@@ -29,4 +27,4 @@ public class ProdutoDTO {
     public Boolean getEmEstoque() {
         return quantidadeEstoque != null && quantidadeEstoque > 0;
     }
-} 
+}

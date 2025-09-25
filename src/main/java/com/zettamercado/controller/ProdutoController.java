@@ -15,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -30,7 +30,7 @@ public class ProdutoController {
     @Operation(summary = "Listar produtos com paginação e filtros")
     public ResponseEntity<Page<ProdutoDTO>> listar(
             @RequestParam(required = false) String nome,
-            @RequestParam(required = false) UUID categoriaId,
+            @RequestParam(required = false) String categoriaId,
             @RequestParam(required = false) Boolean emEstoque,
             @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(produtoService.listar(nome, categoriaId, emEstoque, pageable));
@@ -38,7 +38,7 @@ public class ProdutoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar produto por ID")
-    public ResponseEntity<ProdutoDTO> buscarPorId(@PathVariable UUID id) {
+    public ResponseEntity<ProdutoDTO> buscarPorId(@PathVariable String id) {
         return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 
@@ -53,7 +53,7 @@ public class ProdutoController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Atualizar produto existente")
     public ResponseEntity<ProdutoDTO> atualizar(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody ProdutoDTO produto) {
         return ResponseEntity.ok(produtoService.atualizar(id, produto));
     }
@@ -61,7 +61,7 @@ public class ProdutoController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Excluir produto")
-    public ResponseEntity<Void> excluir(@PathVariable UUID id) {
+    public ResponseEntity<Void> excluir(@PathVariable String id) {
         produtoService.excluir(id);
         return ResponseEntity.noContent().build();
     }
@@ -70,7 +70,7 @@ public class ProdutoController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Upload de imagem do produto")
     public ResponseEntity<ProdutoDTO> uploadImagem(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @RequestParam("imagem") MultipartFile imagem) {
         return ResponseEntity.ok(produtoService.uploadImagem(id, imagem));
     }
@@ -79,8 +79,8 @@ public class ProdutoController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Atualizar estoque do produto")
     public ResponseEntity<ProdutoDTO> atualizarEstoque(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @RequestParam Integer quantidade) {
         return ResponseEntity.ok(produtoService.atualizarEstoque(id, quantidade));
     }
-} 
+}

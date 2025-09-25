@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/categorias")
@@ -32,7 +32,7 @@ public class CategoriaController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar categoria por ID")
-    public ResponseEntity<CategoriaDTO> buscarPorId(@PathVariable UUID id) {
+    public ResponseEntity<CategoriaDTO> buscarPorId(@PathVariable String id) {
         return ResponseEntity.ok(categoriaService.buscarPorId(id));
     }
 
@@ -47,7 +47,7 @@ public class CategoriaController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Atualizar categoria existente")
     public ResponseEntity<CategoriaDTO> atualizar(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody CategoriaDTO categoria) {
         return ResponseEntity.ok(categoriaService.atualizar(id, categoria));
     }
@@ -55,8 +55,8 @@ public class CategoriaController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Excluir categoria")
-    public ResponseEntity<Void> excluir(@PathVariable UUID id) {
+    public ResponseEntity<Void> excluir(@PathVariable String id) {
         categoriaService.excluir(id);
         return ResponseEntity.noContent().build();
     }
-} 
+}
