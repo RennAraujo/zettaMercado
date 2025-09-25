@@ -173,6 +173,12 @@ O sistema possui configurações de segurança aprimoradas com acesso controlado
 Para informações detalhadas sobre as melhorias de segurança implementadas, consulte o arquivo `SECURITY_REPORT.md`.
 
 ## 🐛 Correções Recentes
+### v1.3.0 - Correção de Migrações e Estabilização
+- **✅ Migrações Flyway corrigidas** - Resolvidos problemas de sintaxe SQL e IDs duplicados
+- **✅ Base de dados estabilizada** - Produtos únicos com códigos de barras consistentes
+- **✅ Docker otimizado** - Cache limpo e containers funcionando corretamente
+- **✅ Sistema totalmente operacional** - Frontend e backend integrados e funcionais
+
 ### v1.2.0 - Auditoria de Segurança Completa
 - **✅ Credenciais externalizadas** - Todas as configurações sensíveis movidas para `.env`
 - **✅ Headers de segurança** - Implementados headers de proteção (XSS, CSRF, etc.)

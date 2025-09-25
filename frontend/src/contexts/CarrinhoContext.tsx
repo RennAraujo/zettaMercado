@@ -50,10 +50,22 @@ export const CarrinhoProvider: React.FC<CarrinhoProviderProps> = ({ children }) 
   const buscarCarrinho = async () => {
     try {
       setLoading(true);
+      // Verificar se o usuário está autenticado
+      const token = localStorage.getItem('token');
+      const recruiterMode = localStorage.getItem('recruiter-mode');
+      
+      if (!token && !recruiterMode) {
+        // Se não há token nem modo recrutador, criar carrinho vazio
+        setCarrinho(null);
+        return;
+      }
+      
       const response = await api.get('/carrinhos/atual');
       setCarrinho(response.data);
     } catch (error) {
       console.error('Erro ao buscar carrinho:', error);
+      // Em caso de erro, não quebrar a aplicação
+      setCarrinho(null);
     } finally {
       setLoading(false);
     }

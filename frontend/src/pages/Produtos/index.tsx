@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container,
+  Typography,
   Grid,
   Card,
   CardContent,
   CardMedia,
-  Typography,
   Button,
   Box,
   CircularProgress,
   TextField,
-  MenuItem,
   FormControl,
   InputLabel,
   Select,
+  MenuItem,
   Chip,
-  IconButton,
   Badge,
+  IconButton,
   Snackbar,
   Alert,
   Paper,
-  Fade,
   Zoom,
   CardActions,
   Divider,
@@ -34,20 +33,25 @@ import {
   FilterList as FilterIcon,
   LocalOffer as OfferIcon,
   Star as StarIcon,
+  Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import { useCarrinho } from '../../contexts/CarrinhoContext';
+import ProdutoDetalhesModal from '../../components/ProdutoDetalhesModal';
 
 interface Produto {
-  id: number;
+  id: string;
   nome: string;
   descricao: string;
   preco: number;
-  imagemUrl: string;
+  imagemUrl?: string;
   categoriaId: number;
   estoque: number;
+  categoriaNome?: string;
+  codigoBarras?: string;
+  status: string;
 }
 
 interface Categoria {
@@ -66,6 +70,8 @@ const Produtos: React.FC = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [quantidades, setQuantidades] = useState<{ [key: string]: number }>({});
+  const [modalProduto, setModalProduto] = useState<Produto | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const { carrinho, adicionarItem, loading: carrinhoLoading } = useCarrinho();
 
   const fetchData = async () => {
@@ -124,6 +130,33 @@ const Produtos: React.FC = () => {
 
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  const handleAbrirDetalhes = (produto: Produto) => {
+    setModalProduto(produto);
+    setModalOpen(true);
+  };
+
+  const handleFecharModal = () => {
+    setModalOpen(false);
+    setModalProduto(null);
+  };
+
+  const handleAdicionarDoModal = async (produto: Produto, quantidade: number) => {
+    try {
+      await adicionarItem(produto.id.toString(), quantidade);
+      setSnackbar({
+        open: true,
+        message: `${quantidade}x ${produto.nome} adicionado ao carrinho!`,
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Erro ao adicionar produto ao carrinho',
+        severity: 'error'
+      });
+    }
   };
 
   const filteredProdutos = produtos.filter((produto) => {
@@ -453,9 +486,25 @@ const Produtos: React.FC = () => {
                           ? 'grey.400' 
                           : 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
                       },
+                      mb: 1,
                     }}
                   >
                     {produto.estoque === 0 ? '❌ Sem Estoque' : '🛒 Adicionar ao Carrinho'}
+                  </Button>
+
+                  <Button 
+                    variant="outlined" 
+                    fullWidth
+                    onClick={() => handleAbrirDetalhes(produto)}
+                    startIcon={<VisibilityIcon />}
+                    sx={{
+                      py: 1,
+                      borderRadius: 2,
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    👁️ Ver Detalhes
                   </Button>
                 </CardActions>
               </Card>
@@ -494,6 +543,15 @@ const Produtos: React.FC = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      {/* Modal de Detalhes do Produto */}
+      <ProdutoDetalhesModal
+        produto={modalProduto}
+        open={modalOpen}
+        onClose={handleFecharModal}
+        onAdicionarAoCarrinho={handleAdicionarDoModal}
+        carrinhoLoading={carrinhoLoading}
+      />
     </Container>
   );
 };
