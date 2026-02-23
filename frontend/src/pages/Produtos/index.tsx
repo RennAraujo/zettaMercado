@@ -5,7 +5,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardMedia,
   Button,
   Box,
   TextField,
@@ -44,6 +43,7 @@ import api from '../../services/api';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
 import { useCarrinho } from '../../contexts/CarrinhoContext';
 import ProdutoDetalhesModal from '../../components/ProdutoDetalhesModal';
+import ProductImage from '../../components/ProductImage';
 
 interface Produto {
   id: string;
@@ -62,9 +62,6 @@ interface Categoria {
   id: number;
   nome: string;
 }
-
-// Placeholder de imagem confiável
-const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZW0gZG8gUHJvZHV0bzwvdGV4dD48L3N2Zz4=';
 
 const Produtos: React.FC = () => {
   const navigate = useNavigate();
@@ -373,18 +370,10 @@ const Produtos: React.FC = () => {
               >
                 {/* Imagem */}
                 <Box sx={{ position: 'relative', width: viewMode === 'list' ? 200 : '100%' }}>
-                  <CardMedia
-                    component="img"
-                    height={viewMode === 'list' ? 180 : 200}
-                    image={produto.imagemUrl || PLACEHOLDER_IMAGE}
+                  <ProductImage
+                    src={produto.imagemUrl}
                     alt={produto.nome}
-                    sx={{
-                      objectFit: 'cover',
-                      backgroundColor: '#f5f5f5',
-                    }}
-                    onError={(e: any) => {
-                      e.target.src = PLACEHOLDER_IMAGE;
-                    }}
+                    height={viewMode === 'list' ? 180 : 200}
                   />
                   {produto.preco < 10 && (
                     <Chip

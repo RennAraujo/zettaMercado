@@ -22,6 +22,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAutoRefresh } from '../../hooks/useAutoRefresh';
+import ProductImage from '../../components/ProductImage';
 
 interface Produto {
   id: number;
@@ -32,8 +33,14 @@ interface Produto {
   categoriaNome?: string;
 }
 
-// Placeholder de imagem confiável
-const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZW0gZG8gUHJvZHV0bzwvdGV4dD48L3N2Zz4=';
+interface Produto {
+  id: number;
+  nome: string;
+  descricao: string;
+  preco: number;
+  imagemUrl: string;
+  categoriaNome?: string;
+}
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -244,18 +251,10 @@ const Home: React.FC = () => {
                 onClick={() => navigate(`/produtos/${produto.id}`)}
               >
                 <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={produto.imagemUrl || PLACEHOLDER_IMAGE}
+                  <ProductImage
+                    src={produto.imagemUrl}
                     alt={produto.nome}
-                    sx={{
-                      objectFit: 'cover',
-                      backgroundColor: '#f5f5f5',
-                    }}
-                    onError={(e: any) => {
-                      e.target.src = PLACEHOLDER_IMAGE;
-                    }}
+                    height={200}
                   />
                   {produto.preco < 10 && (
                     <Chip

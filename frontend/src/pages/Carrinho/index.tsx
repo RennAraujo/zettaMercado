@@ -32,9 +32,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useCarrinho } from '../../contexts/CarrinhoContext';
-
-// Placeholder de imagem confiável
-const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZW0gZG8gUHJvZHV0bzwvdGV4dD48L3N2Zz4=';
+import ProductImage from '../../components/ProductImage';
 
 const Carrinho: React.FC = () => {
   const navigate = useNavigate();
@@ -241,18 +239,10 @@ const Carrinho: React.FC = () => {
                 <CardContent sx={{ p: 2.5 }}>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={3} sm={2}>
-                      <Box
-                        component="img"
-                        src={item.produtoImagem || PLACEHOLDER_IMAGE}
+                      <ProductImage
+                        src={item.produtoImagem}
                         alt={item.produtoNome}
-                        onError={(e: any) => { e.target.src = PLACEHOLDER_IMAGE; }}
-                        sx={{
-                          width: '100%',
-                          height: 80,
-                          objectFit: 'cover',
-                          borderRadius: 2,
-                          backgroundColor: '#f5f5f5',
-                        }}
+                        height={80}
                       />
                     </Grid>
                     
