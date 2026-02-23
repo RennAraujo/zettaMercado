@@ -6,6 +6,7 @@ interface User {
   nome: string;
   email: string;
   role?: string;
+  perfil?: string;
 }
 
 interface AuthContextData {
