@@ -37,17 +37,21 @@ public class AuthController {
 
     @PostMapping("/recruiter-access")
     @Operation(summary = "Acesso para recrutadores sem cadastro")
-    public ResponseEntity<UsuarioDTO> recruiterAccess() {
-        // Criar usuário temporário para recrutadores
-        UsuarioDTO recruiterUser = new UsuarioDTO();
-        recruiterUser.setId("00000000-0000-0000-0000-000000000999");
-        recruiterUser.setNome("Recrutador");
-        recruiterUser.setEmail("recruiter@demo.com");
-        recruiterUser.setPerfil(Usuario.PerfilUsuario.DEMO);
-        recruiterUser.setStatus(Usuario.StatusUsuario.ATIVO);
-        recruiterUser.setDataCriacao(LocalDateTime.now());
-        recruiterUser.setDataAtualizacao(LocalDateTime.now());
-        
-        return ResponseEntity.ok(recruiterUser);
+    public ResponseEntity<?> recruiterAccess() {
+        try {
+            // Criar usuário temporário para recrutadores
+            UsuarioDTO recruiterUser = new UsuarioDTO();
+            recruiterUser.setId("recruiter-001");
+            recruiterUser.setNome("Recrutador");
+            recruiterUser.setEmail("recruiter@demo.com");
+            recruiterUser.setPerfil(Usuario.PerfilUsuario.DEMO);
+            recruiterUser.setStatus(Usuario.StatusUsuario.ATIVO);
+            recruiterUser.setDataCriacao(LocalDateTime.now());
+            recruiterUser.setDataAtualizacao(LocalDateTime.now());
+            
+            return ResponseEntity.ok(recruiterUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro: " + e.getMessage());
+        }
     }
 }
