@@ -30,15 +30,15 @@ public class ProdutoService {
 
     @Transactional(readOnly = true)
     public Page<ProdutoDTO> listar(String nome, String categoriaId, Boolean emEstoque, Pageable pageable) {
-        // Por enquanto, retorna todos os produtos - implementação simplificada
+        // Retorna produtos ordenados alfabeticamente por nome
         if (nome != null && !nome.trim().isEmpty()) {
-            return produtoRepository.findByNomeContainingIgnoreCase(nome, pageable)
+            return produtoRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(nome, pageable)
                     .map(produtoMapper::toDTO);
         } else if (categoriaId != null) {
-            return produtoRepository.findByCategoriaId(categoriaId, pageable)
+            return produtoRepository.findByCategoriaIdOrderByNomeAsc(categoriaId, pageable)
                     .map(produtoMapper::toDTO);
         } else {
-            return produtoRepository.findAll(pageable)
+            return produtoRepository.findAllByOrderByNomeAsc(pageable)
                     .map(produtoMapper::toDTO);
         }
     }

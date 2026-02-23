@@ -23,13 +23,14 @@ public class CategoriaService {
     @Transactional(readOnly = true)
     public List<CategoriaDTO> listar(Boolean apenasAtivas) {
         if (Boolean.TRUE.equals(apenasAtivas)) {
-            return categoriaRepository.findByStatus(Categoria.StatusCategoria.ATIVA)
+            return categoriaRepository.findByStatusOrderByNomeAsc(Categoria.StatusCategoria.ATIVA)
                     .stream()
                     .map(categoriaMapper::toDTO)
                     .collect(Collectors.toList());
         }
         return categoriaRepository.findAll()
                 .stream()
+                .sorted((c1, c2) -> c1.getNome().compareToIgnoreCase(c2.getNome()))
                 .map(categoriaMapper::toDTO)
                 .collect(Collectors.toList());
     }

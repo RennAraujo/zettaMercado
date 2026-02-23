@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, String> {
-    List<Categoria> findByStatus(Categoria.StatusCategoria status);
+    List<Categoria> findByStatusOrderByNomeAsc(Categoria.StatusCategoria status);
 }

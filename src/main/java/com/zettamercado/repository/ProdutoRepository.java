@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, String> {
     
-    // Método simples para buscar todos os produtos
-    Page<Produto> findAll(Pageable pageable);
+    // Método simples para buscar todos os produtos ordenados por nome
+    Page<Produto> findAllByOrderByNomeAsc(Pageable pageable);
     
-    // Método para buscar por categoria
-    Page<Produto> findByCategoriaId(String categoriaId, Pageable pageable);
+    // Método para buscar por categoria ordenados por nome
+    Page<Produto> findByCategoriaIdOrderByNomeAsc(String categoriaId, Pageable pageable);
     
-    // Método para buscar por nome contendo
-    Page<Produto> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    // Método para buscar por nome contendo ordenados por nome
+    Page<Produto> findByNomeContainingIgnoreCaseOrderByNomeAsc(String nome, Pageable pageable);
 }
