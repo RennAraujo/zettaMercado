@@ -8,7 +8,6 @@ import {
   CardMedia,
   Button,
   Box,
-  CircularProgress,
   TextField,
   FormControl,
   InputLabel,
@@ -20,9 +19,11 @@ import {
   Snackbar,
   Alert,
   Paper,
-  Zoom,
-  CardActions,
-  Divider,
+  Fade,
+  Skeleton,
+  ToggleButtonGroup,
+  ToggleButton,
+  InputAdornment,
 } from '@mui/material';
 import { 
   Refresh as RefreshIcon, 
@@ -30,10 +31,13 @@ import {
   Add as AddIcon,
   Remove as RemoveIcon,
   Search as SearchIcon,
+  GridView as GridViewIcon,
+  ViewList as ViewListIcon,
   FilterList as FilterIcon,
   LocalOffer as OfferIcon,
   Star as StarIcon,
   Visibility as VisibilityIcon,
+  ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -59,6 +63,9 @@ interface Categoria {
   nome: string;
 }
 
+// Placeholder de imagem confiável
+const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZW0gZG8gUHJvZHV0bzwvdGV4dD48L3N2Zz4=';
+
 const Produtos: React.FC = () => {
   const navigate = useNavigate();
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -68,6 +75,7 @@ const Produtos: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategoria, setSelectedCategoria] = useState<number | ''>('');
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [quantidades, setQuantidades] = useState<{ [key: string]: number }>({});
   const [modalProduto, setModalProduto] = useState<Produto | null>(null);
@@ -117,7 +125,6 @@ const Produtos: React.FC = () => {
         message: `${produto.nome} adicionado ao carrinho!`,
         severity: 'success'
       });
-      // Reset quantidade após adicionar
       setQuantidades(prev => ({ ...prev, [produto.id]: 1 }));
     } catch (error) {
       setSnackbar({
@@ -167,235 +174,289 @@ const Produtos: React.FC = () => {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
-        <CircularProgress />
-      </Box>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 3, mb: 3 }} />
+        <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3, mb: 3 }} />
+        <Grid container spacing={3}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Grid item key={i} xs={12} sm={6} md={4}>
+              <Skeleton variant="rectangular" height={350} sx={{ borderRadius: 3 }} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <Typography color="error" align="center" variant="h6" sx={{ mt: 4 }}>
-          {error}
-        </Typography>
+      <Container maxWidth="xl" sx={{ py: 8 }}>
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: 6, 
+            textAlign: 'center',
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%)',
+          }}
+        >
+          <Typography variant="h5" sx={{ color: '#EA1D2C', mb: 2, fontWeight: 600 }}>
+            😕 Ops! Algo deu errado
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            {error}
+          </Typography>
+          <Button 
+            variant="contained" 
+            onClick={forceRefresh}
+            startIcon={<RefreshIcon />}
+          >
+            Tentar Novamente
+          </Button>
+        </Paper>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="xl">
-      {/* Header moderno */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          p: 4,
-          borderRadius: 3,
-          mb: 4,
-          mt: 2
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box>
-            <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold', mb: 1 }}>
-              🛒 Nossos Produtos
-            </Typography>
-            <Typography variant="h6" sx={{ opacity: 0.9 }}>
-              Descubra os melhores produtos com preços incríveis
+    <Fade in={true}>
+      <Container maxWidth="xl" sx={{ py: 3 }}>
+        {/* Header */}
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: { xs: 3, md: 4 },
+            borderRadius: 3,
+            mb: 3,
+            background: 'linear-gradient(135deg, #EA1D2C 0%, #FF6B6B 100%)',
+            color: 'white',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <IconButton 
+              onClick={() => navigate('/home')}
+              sx={{ color: 'white', mr: 2, '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+              🛒 Todos os Produtos
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 400 }}>
+            {produtos.length} produtos disponíveis em {categorias.length} categorias
+          </Typography>
+        </Paper>
+
+        {/* Filtros */}
+        <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <FilterIcon sx={{ mr: 1, color: '#EA1D2C' }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Filtros
+            </Typography>
+            <Box sx={{ flexGrow: 1 }} />
+            
+            {/* Toggle View Mode */}
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={(e, value) => value && setViewMode(value)}
+              size="small"
+              sx={{ mr: 2 }}
+            >
+              <ToggleButton value="grid">
+                <GridViewIcon />
+              </ToggleButton>
+              <ToggleButton value="list">
+                <ViewListIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
+
             <IconButton 
               onClick={() => navigate('/carrinho')}
               sx={{ 
-                bgcolor: 'rgba(255,255,255,0.2)', 
-                color: 'white',
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' }
+                bgcolor: 'rgba(234, 29, 44, 0.08)', 
+                color: '#EA1D2C',
+                '&:hover': { bgcolor: 'rgba(234, 29, 44, 0.12)' }
               }}
             >
-              <Badge badgeContent={carrinho?.quantidadeItens || 0} color="error">
+              <Badge badgeContent={carrinho?.quantidadeItens || 0} color="primary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
+          </Box>
+
+          <Grid container spacing={3} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Buscar produtos..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#717171' }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth>
+                <InputLabel>Categoria</InputLabel>
+                <Select
+                  value={selectedCategoria}
+                  label="Categoria"
+                  onChange={(e) => setSelectedCategoria(e.target.value as number)}
+                  sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value="">Todas as Categorias</MenuItem>
+                  {categorias.map((categoria) => (
+                    <MenuItem key={categoria.id} value={categoria.id}>
+                      {categoria.nome}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<RefreshIcon />}
+                onClick={forceRefresh}
+                disabled={loading}
+              >
+                Atualizar
+              </Button>
+            </Grid>
+          </Grid>
+
+          {/* Resultados */}
+          <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Chip 
+              label={`${filteredProdutos.length} produtos encontrados`}
+              size="small"
+              color="primary"
+            />
             <Chip 
               label={`Atualizado: ${lastUpdate.toLocaleTimeString()}`}
               size="small"
-              sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
-            />
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<RefreshIcon />}
-              onClick={forceRefresh}
-              disabled={loading}
-              sx={{ 
-                bgcolor: 'rgba(255,255,255,0.2)',
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' }
-              }}
-            >
-              Atualizar
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-      {/* Filtros modernos */}
-      <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <FilterIcon sx={{ mr: 1, color: 'primary.main' }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Filtros
-          </Typography>
-        </Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <TextField
-              fullWidth
-              label="Buscar produtos"
               variant="outlined"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              InputProps={{
-                startAdornment: <SearchIcon sx={{ color: 'action.active', mr: 1 }} />,
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
-                  '&:hover fieldset': {
-                    borderColor: 'primary.main',
-                  },
-                },
-              }}
             />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <FormControl fullWidth>
-              <InputLabel>Categoria</InputLabel>
-              <Select
-                value={selectedCategoria}
-                label="Categoria"
-                onChange={(e) => setSelectedCategoria(e.target.value as number)}
-                sx={{ borderRadius: 2 }}
-              >
-                <MenuItem value="">🏪 Todas as Categorias</MenuItem>
-                {categorias.map((categoria) => (
-                  <MenuItem key={categoria.id} value={categoria.id}>
-                    📦 {categoria.nome}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Paper>
+          </Box>
+        </Paper>
 
-      {/* Grid de produtos com animações */}
-      <Grid container spacing={3}>
-        {filteredProdutos.map((produto, index) => (
-          <Grid item key={produto.id} xs={12} sm={6} md={4} lg={3}>
-            <Zoom in={true} style={{ transitionDelay: `${index * 100}ms` }}>
+        {/* Grid de produtos */}
+        <Grid container spacing={3}>
+          {filteredProdutos.map((produto, index) => (
+            <Grid item key={produto.id} xs={12} sm={viewMode === 'grid' ? 6 : 12} md={viewMode === 'grid' ? 4 : 12} lg={viewMode === 'grid' ? 3 : 12}>
               <Card
                 sx={{
                   height: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
-                  borderRadius: 3,
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease-in-out',
+                  flexDirection: viewMode === 'list' ? 'row' : 'column',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 12px 40px rgba(234, 29, 44, 0.12)',
                   },
-                  position: 'relative',
                 }}
               >
-                {/* Badge de oferta */}
-                {produto.preco < 10 && (
-                  <Box
+                {/* Imagem */}
+                <Box sx={{ position: 'relative', width: viewMode === 'list' ? 200 : '100%' }}>
+                  <CardMedia
+                    component="img"
+                    height={viewMode === 'list' ? 180 : 200}
+                    image={produto.imagemUrl || PLACEHOLDER_IMAGE}
+                    alt={produto.nome}
                     sx={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      bgcolor: 'error.main',
-                      color: 'white',
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: 2,
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold',
-                      zIndex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5,
+                      objectFit: 'cover',
+                      backgroundColor: '#f5f5f5',
                     }}
-                  >
-                    <OfferIcon sx={{ fontSize: 14 }} />
-                    OFERTA
+                    onError={(e: any) => {
+                      e.target.src = PLACEHOLDER_IMAGE;
+                    }}
+                  />
+                  {produto.preco < 10 && (
+                    <Chip
+                      icon={<OfferIcon sx={{ fontSize: 14 }} />}
+                      label="OFERTA"
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        top: 12,
+                        right: 12,
+                        backgroundColor: '#FFB500',
+                        color: '#1A1A1A',
+                        fontWeight: 700,
+                        fontSize: '0.7rem',
+                      }}
+                    />
+                  )}
+                </Box>
+
+                {/* Conteúdo */}
+                <CardContent sx={{ flexGrow: 1, p: 2.5, display: 'flex', flexDirection: 'column' }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    {produto.categoriaNome && (
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          color: '#EA1D2C', 
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
+                        {produto.categoriaNome}
+                      </Typography>
+                    )}
+                    
+                    <Typography 
+                      gutterBottom 
+                      variant="h6" 
+                      component="h2"
+                      sx={{ 
+                        fontWeight: 600,
+                        fontSize: '1rem',
+                        lineHeight: 1.3,
+                        mt: 0.5,
+                      }}
+                    >
+                      {produto.nome}
+                    </Typography>
+                    
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        mb: 2,
+                      }}
+                    >
+                      {produto.descricao}
+                    </Typography>
                   </Box>
-                )}
-                
-                <CardMedia
-                  component="img"
-                  height="220"
-                  image={produto.imagemUrl || 'https://via.placeholder.com/300x220/f5f5f5/999999?text=Produto'}
-                  alt={produto.nome}
-                  sx={{
-                    objectFit: 'cover',
-                    transition: 'transform 0.3s ease-in-out',
-                    '&:hover': {
-                      transform: 'scale(1.05)',
-                    },
-                  }}
-                />
-                
-                <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
-                  <Typography 
-                    gutterBottom 
-                    variant="h6" 
-                    component="div"
-                    sx={{ 
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      lineHeight: 1.3,
-                      mb: 1,
-                      minHeight: '2.6rem',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {produto.nome}
-                  </Typography>
-                  
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    sx={{ 
-                      mb: 2,
-                      minHeight: '2.5rem',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {produto.descricao}
-                  </Typography>
-                  
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+
+                  {/* Preço e Estoque */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                     <Typography 
                       variant="h5" 
                       sx={{ 
-                        fontWeight: 'bold',
-                        color: 'primary.main',
-                        fontSize: '1.4rem',
+                        fontWeight: 700,
+                        color: '#EA1D2C',
                       }}
                     >
                       R$ {produto.preco.toFixed(2)}
@@ -407,152 +468,90 @@ const Produtos: React.FC = () => {
                       variant="outlined"
                     />
                   </Box>
-                  
-                  {/* Avaliação fictícia */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <StarIcon 
-                        key={star} 
-                        sx={{ 
-                          fontSize: 16, 
-                          color: star <= 4 ? 'warning.main' : 'grey.300' 
-                        }} 
-                      />
-                    ))}
-                    <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
-                      (4.0)
-                    </Typography>
+
+                  {/* Controles */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#f5f5f5', borderRadius: 2, px: 1 }}>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleQuantidadeChange(produto.id.toString(), -1)}
+                        disabled={produto.estoque === 0}
+                      >
+                        <RemoveIcon fontSize="small" />
+                      </IconButton>
+                      <Typography sx={{ mx: 1.5, minWidth: '20px', textAlign: 'center', fontWeight: 600 }}>
+                        {quantidades[produto.id] || 1}
+                      </Typography>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleQuantidadeChange(produto.id.toString(), 1)}
+                        disabled={produto.estoque === 0 || (quantidades[produto.id] || 1) >= produto.estoque}
+                      >
+                        <AddIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+
+                    <Button 
+                      variant="contained" 
+                      fullWidth
+                      onClick={() => handleAdicionarAoCarrinho(produto)}
+                      disabled={produto.estoque === 0 || carrinhoLoading}
+                      startIcon={<ShoppingCartIcon />}
+                      sx={{
+                        py: 1,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {produto.estoque === 0 ? 'Esgotado' : 'Adicionar'}
+                    </Button>
                   </Box>
                 </CardContent>
-                
-                <Divider />
-                
-                <CardActions sx={{ p: 2.5, pt: 2 }}>
-                  {/* Controles de quantidade modernos */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, width: '100%', justifyContent: 'center' }}>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => handleQuantidadeChange(produto.id.toString(), -1)}
-                      disabled={produto.estoque === 0}
-                      sx={{
-                        bgcolor: 'grey.100',
-                        '&:hover': { bgcolor: 'grey.200' },
-                        '&:disabled': { bgcolor: 'grey.50' },
-                      }}
-                    >
-                      <RemoveIcon fontSize="small" />
-                    </IconButton>
-                    <Typography 
-                      sx={{ 
-                        mx: 3, 
-                        minWidth: '30px', 
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                      }}
-                    >
-                      {quantidades[produto.id] || 1}
-                    </Typography>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => handleQuantidadeChange(produto.id.toString(), 1)}
-                      disabled={produto.estoque === 0 || (quantidades[produto.id] || 1) >= produto.estoque}
-                      sx={{
-                        bgcolor: 'grey.100',
-                        '&:hover': { bgcolor: 'grey.200' },
-                        '&:disabled': { bgcolor: 'grey.50' },
-                      }}
-                    >
-                      <AddIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-
-                  <Button 
-                    variant="contained" 
-                    fullWidth
-                    onClick={() => handleAdicionarAoCarrinho(produto)}
-                    disabled={produto.estoque === 0 || carrinhoLoading}
-                    startIcon={<ShoppingCartIcon />}
-                    sx={{
-                      py: 1.2,
-                      borderRadius: 2,
-                      fontWeight: 'bold',
-                      fontSize: '0.9rem',
-                      background: produto.estoque === 0 
-                        ? 'grey.400' 
-                        : 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-                      '&:hover': {
-                        background: produto.estoque === 0 
-                          ? 'grey.400' 
-                          : 'linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)',
-                      },
-                      mb: 1,
-                    }}
-                  >
-                    {produto.estoque === 0 ? '❌ Sem Estoque' : '🛒 Adicionar ao Carrinho'}
-                  </Button>
-
-                  <Button 
-                    variant="outlined" 
-                    fullWidth
-                    onClick={() => handleAbrirDetalhes(produto)}
-                    startIcon={<VisibilityIcon />}
-                    sx={{
-                      py: 1,
-                      borderRadius: 2,
-                      fontWeight: 'bold',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    👁️ Ver Detalhes
-                  </Button>
-                </CardActions>
               </Card>
-            </Zoom>
-          </Grid>
-        ))}
-      </Grid>
-      
-      {/* Mensagem quando não há produtos */}
-      {filteredProdutos.length === 0 && (
-        <Paper 
-          elevation={0} 
-          sx={{ 
-            p: 6, 
-            textAlign: 'center', 
-            bgcolor: 'grey.50',
-            borderRadius: 3,
-          }}
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Mensagem quando não há produtos */}
+        {filteredProdutos.length === 0 && (
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 6, 
+              textAlign: 'center', 
+              borderRadius: 3,
+              mt: 4,
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2, color: 'text.secondary' }}>
+              🔍 Nenhum produto encontrado
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Tente ajustar os filtros ou buscar por outros termos
+            </Typography>
+          </Paper>
+        )}
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-          <Typography variant="h5" sx={{ mb: 2, color: 'text.secondary' }}>
-            🔍 Nenhum produto encontrado
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Tente ajustar os filtros ou buscar por outros termos
-          </Typography>
-        </Paper>
-      )}
+          <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-
-      {/* Modal de Detalhes do Produto */}
-      <ProdutoDetalhesModal
-        produto={modalProduto}
-        open={modalOpen}
-        onClose={handleFecharModal}
-        onAdicionarAoCarrinho={handleAdicionarDoModal}
-        carrinhoLoading={carrinhoLoading}
-      />
-    </Container>
+        {/* Modal de Detalhes */}
+        <ProdutoDetalhesModal
+          produto={modalProduto}
+          open={modalOpen}
+          onClose={handleFecharModal}
+          onAdicionarAoCarrinho={handleAdicionarDoModal}
+          carrinhoLoading={carrinhoLoading}
+        />
+      </Container>
+    </Fade>
   );
 };
 
