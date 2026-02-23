@@ -9,13 +9,16 @@ import {
   Button,
   IconButton,
   Divider,
-  CircularProgress,
-  Alert,
+  Paper,
+  Fade,
+  Skeleton,
+  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -23,9 +26,15 @@ import {
   Delete as DeleteIcon,
   ShoppingCart as ShoppingCartIcon,
   ArrowBack as ArrowBackIcon,
+  LocalShipping as ShippingIcon,
+  Payment as PaymentIcon,
+  CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useCarrinho } from '../../contexts/CarrinhoContext';
+
+// Placeholder de imagem confiável
+const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZW0gZG8gUHJvZHV0bzwvdGV4dD48L3N2Zz4=';
 
 const Carrinho: React.FC = () => {
   const navigate = useNavigate();
@@ -95,10 +104,10 @@ const Carrinho: React.FC = () => {
       await finalizarCompra();
       setSnackbar({
         open: true,
-        message: 'Compra finalizada com sucesso!',
+        message: 'Compra finalizada com sucesso! 🎉',
         severity: 'success'
       });
-      navigate('/produtos');
+      setTimeout(() => navigate('/produtos'), 2000);
     } catch (error) {
       setSnackbar({
         open: true,
@@ -114,197 +123,329 @@ const Carrinho: React.FC = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3, mb: 3 }} />
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={8}>
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} variant="rectangular" height={120} sx={{ borderRadius: 3, mb: 2 }} />
+            ))}
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 3 }} />
+          </Grid>
+        </Grid>
       </Container>
     );
   }
 
   if (!carrinho || !carrinho.itens || carrinho.itens.length === 0) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <IconButton onClick={() => navigate('/produtos')} sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" component="h1">
-            Carrinho de Compras
-          </Typography>
-        </Box>
-        
-        <Box sx={{ textAlign: 'center', py: 8 }}>
-          <ShoppingCartIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            Seu carrinho está vazio
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Adicione alguns produtos para começar suas compras
-          </Typography>
-          <Button 
-            variant="contained" 
-            size="large"
-            onClick={() => navigate('/produtos')}
+      <Fade in={true}>
+        <Container maxWidth="md" sx={{ py: 8 }}>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: 6, 
+              textAlign: 'center',
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%)',
+            }}
           >
-            Continuar Comprando
-          </Button>
-        </Box>
-      </Container>
+            <Box
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #EA1D2C 0%, #FF6B6B 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mx: 'auto',
+                mb: 3,
+              }}
+            >
+              <ShoppingCartIcon sx={{ fontSize: 60, color: 'white' }} />
+            </Box>
+            
+            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
+              Seu carrinho está vazio
+            </Typography>
+            
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
+              Adicione alguns produtos incríveis e aproveite nossas ofertas especiais!
+            </Typography>
+            
+            <Button 
+              variant="contained" 
+              size="large"
+              onClick={() => navigate('/produtos')}
+              sx={{ px: 5, py: 1.5 }}
+            >
+              Explorar Produtos
+            </Button>
+          </Paper>
+        </Container>
+      </Fade>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate('/produtos')} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h4" component="h1">
-          Carrinho de Compras
-        </Typography>
-      </Box>
+    <Fade in={true}>
+      <Container maxWidth="xl" sx={{ py: 3 }}>
+        {/* Header */}
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: { xs: 3, md: 4 },
+            borderRadius: 3,
+            mb: 3,
+            background: 'linear-gradient(135deg, #EA1D2C 0%, #FF6B6B 100%)',
+            color: 'white',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton 
+              onClick={() => navigate('/produtos')}
+              sx={{ color: 'white', mr: 2, '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            
+            <Box>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+                🛒 Carrinho de Compras
+              </Typography>
+              <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                {carrinho?.quantidadeItens} {carrinho?.quantidadeItens === 1 ? 'item' : 'itens'} no carrinho
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          {carrinho?.itens?.map((item) => (
-            <Card key={item.id} sx={{ mb: 2 }}>
-              <CardContent>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={12} sm={3}>
-                    <Box
-                      component="img"
-                      src={item.produtoImagem || '/placeholder-image.jpg'}
-                      alt={item.produtoNome}
-                      sx={{
-                        width: '100%',
-                        height: 100,
-                        objectFit: 'cover',
-                        borderRadius: 1,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <Typography variant="h6" gutterBottom>
-                      {item.produtoNome}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      R$ {item.precoUnitario.toFixed(2)} cada
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleQuantidadeChange(item.id, item.quantidade - 1)}
-                        disabled={loading}
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                      <Typography sx={{ mx: 2, minWidth: '20px', textAlign: 'center' }}>
-                        {item.quantidade}
+        <Grid container spacing={3}>
+          {/* Lista de itens */}
+          <Grid item xs={12} md={8}>
+            {carrinho?.itens?.map((item) => (
+              <Card 
+                key={item.id} 
+                sx={{ 
+                  mb: 2, 
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                  },
+                }}
+              >
+                <CardContent sx={{ p: 2.5 }}>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={3} sm={2}>
+                      <Box
+                        component="img"
+                        src={item.produtoImagem || PLACEHOLDER_IMAGE}
+                        alt={item.produtoNome}
+                        onError={(e: any) => { e.target.src = PLACEHOLDER_IMAGE; }}
+                        sx={{
+                          width: '100%',
+                          height: 80,
+                          objectFit: 'cover',
+                          borderRadius: 2,
+                          backgroundColor: '#f5f5f5',
+                        }}
+                      />
+                    </Grid>
+                    
+                    <Grid item xs={9} sm={4}>
+                      <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem', mb: 0.5 }}>
+                        {item.produtoNome}
                       </Typography>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleQuantidadeChange(item.id, item.quantidade + 1)}
-                        disabled={loading}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={2}>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="h6" color="primary" gutterBottom>
-                        R$ {item.subtotal.toFixed(2)}
+                      <Typography variant="body2" color="text.secondary">
+                        R$ {item.precoUnitario.toFixed(2)} cada
                       </Typography>
-                      <IconButton 
-                        color="error" 
-                        onClick={() => handleRemoverItem(item.id)}
-                        disabled={loading}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
+                    </Grid>
+                    
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleQuantidadeChange(item.id, item.quantidade - 1)}
+                          disabled={loading}
+                          sx={{ bgcolor: '#f5f5f5', '&:hover': { bgcolor: '#e0e0e0' } }}
+                        >
+                          <RemoveIcon fontSize="small" />
+                        </IconButton>
+                        
+                        <Typography sx={{ mx: 2, minWidth: '30px', textAlign: 'center', fontWeight: 600 }}>
+                          {item.quantidade}
+                        </Typography>
+                        
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleQuantidadeChange(item.id, item.quantidade + 1)}
+                          disabled={loading}
+                          sx={{ bgcolor: '#f5f5f5', '&:hover': { bgcolor: '#e0e0e0' } }}
+                        >
+                          <AddIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Grid>
+                    
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography variant="h6" sx={{ color: '#EA1D2C', fontWeight: 700 }}>
+                          R$ {item.subtotal.toFixed(2)}
+                        </Typography>
+                        
+                        <IconButton 
+                          color="error" 
+                          onClick={() => handleRemoverItem(item.id)}
+                          disabled={loading}
+                          size="small"
+                          sx={{ mt: 0.5 }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
+                </CardContent>
+              </Card>
+            ))}
+          </Grid>
+
+          {/* Resumo */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ borderRadius: 3, position: 'sticky', top: 80 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
+                  Resumo do Pedido
+                </Typography>
+                
+                <Divider sx={{ my: 2 }} />
+                
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography color="text.secondary">
+                    Subtotal ({carrinho?.quantidadeItens || 0} {carrinho?.quantidadeItens === 1 ? 'item' : 'itens'})
+                  </Typography>
+                  <Typography fontWeight={500}>
+                    R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}
+                  </Typography>
+                </Box>
+                
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography color="text.secondary">
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <ShippingIcon fontSize="small" />
+                      Entrega
+                    </Box>
+                  </Typography>
+                  <Chip 
+                    label="GRÁTIS" 
+                    size="small" 
+                    color="success"
+                    sx={{ fontWeight: 600 }}
+                  />
+                </Box>
+                
+                <Divider sx={{ my: 2 }} />
+                
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    Total
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#EA1D2C', fontWeight: 800 }}>
+                    R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}
+                  </Typography>
+                </Box>
+                
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  size="large"
+                  onClick={handleFinalizarCompra}
+                  disabled={loading}
+                  startIcon={<CheckCircleIcon />}
+                  sx={{ 
+                    mb: 2, 
+                    py: 1.5,
+                    fontSize: '1rem',
+                  }}
+                >
+                  Finalizar Compra
+                </Button>
+                
+                <Button 
+                  variant="outlined" 
+                  fullWidth
+                  onClick={() => setDialogOpen(true)}
+                  disabled={loading}
+                  color="error"
+                  sx={{ mb: 2 }}
+                >
+                  Limpar Carrinho
+                </Button>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 2 }}>
+                  <PaymentIcon fontSize="small" sx={{ color: '#717171' }} />
+                  <Typography variant="caption" color="text.secondary">
+                    Pagamento seguro
+                  </Typography>
+                </Box>
               </CardContent>
             </Card>
-          ))}
+          </Grid>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Resumo do Pedido
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography>Itens ({carrinho?.quantidadeItens || 0}):</Typography>
-                <Typography>R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}</Typography>
-              </Box>
-              
-              <Divider sx={{ my: 2 }} />
-              
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h6">Total:</Typography>
-                <Typography variant="h6" color="primary">
-                  R$ {carrinho?.valorTotal?.toFixed(2) || '0.00'}
-                </Typography>
-              </Box>
-              
-              <Button 
-                variant="contained" 
-                fullWidth 
-                size="large"
-                onClick={handleFinalizarCompra}
-                disabled={loading}
-                sx={{ mb: 2 }}
-              >
-                Finalizar Compra
-              </Button>
-              
-              <Button 
-                variant="outlined" 
-                fullWidth
-                onClick={() => setDialogOpen(true)}
-                disabled={loading}
-              >
-                Limpar Carrinho
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+        {/* Dialog de confirmação */}
+        <Dialog 
+          open={dialogOpen} 
+          onClose={() => setDialogOpen(false)}
+          PaperProps={{ sx: { borderRadius: 3 } }}
+        >
+          <DialogTitle sx={{ fontWeight: 600 }}>
+            Limpar Carrinho?
+          </DialogTitle>
+          
+          <DialogContent>
+            <Typography>
+              Tem certeza que deseja remover todos os itens do carrinho? Esta ação não pode ser desfeita.
+            </Typography>
+          </DialogContent>
+          
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setDialogOpen(false)}>
+              Cancelar
+            </Button>
+            
+            <Button 
+              onClick={handleLimparCarrinho} 
+              color="error" 
+              variant="contained"
+              autoFocus
+            >
+              Limpar Carrinho
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      {/* Dialog de confirmação */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>Confirmar Limpeza</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Tem certeza que deseja remover todos os itens do carrinho?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancelar</Button>
-          <Button onClick={handleLimparCarrinho} color="error" autoFocus>
-            Limpar Carrinho
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar para notificações */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity={snackbar.severity}
+            sx={{ borderRadius: 2 }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Container>
+    </Fade>
   );
 };
 
